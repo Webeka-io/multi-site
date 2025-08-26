@@ -4,7 +4,7 @@ export const routes = [""] as const; // ⬅️ mono-page
 
 export function Layout({ children, tenant }: { children: React.ReactNode; tenant: Tenant }) {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen ">
       <nav className="mx-auto max-w-6xl px-6 py-4 flex justify-between">
         <div className="font-bold">{tenant.name}</div>
         <div className="flex gap-6">

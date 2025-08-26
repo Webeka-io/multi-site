@@ -21,33 +21,27 @@ export function Layout({ children, tenant }: { children: React.ReactNode; tenant
   );
 }
 
-export function Page({ tenant }: { path?: string[]; tenant: Tenant }) {
+// ex. bakery-simple
+export function Page({ tenant }: { tenant: Tenant }) {
   return (
     <>
-      {/* HERO */}
-      <section id="top" className="text-center space-y-4">
-        <h1 className="text-4xl font-bold">{tenant.content.heroTitle}</h1>
-        {tenant.content.heroSubtitle && <p className="text-lg opacity-80">{tenant.content.heroSubtitle}</p>}
-        {tenant.content.ctaLabel && (
-          // ✅ ancre interne (plus d'erreur ESLint)
-          <a href="#contact" className="inline-block rounded-xl px-6 py-3 font-medium text-white" style={{ background: "var(--color-primary)" }}>
-            {tenant.content.ctaLabel}
-          </a>
-        )}
+      <section className="text-center space-y-4">
+        <h1>{tenant.content.heroTitle}</h1>
+        {tenant.content.heroSubtitle && <p className="opacity-80">{tenant.content.heroSubtitle}</p>}
+        {tenant.content.ctaLabel && <a href="#contact" className="btn">{tenant.content.ctaLabel}</a>}
       </section>
 
-      {/* SERVICES */}
       <section id="services" className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <h2 className="md:col-span-3 text-2xl font-semibold">Nos spécialités</h2>
-        {/* …tes cartes de services… */}
+        <article className="card">
+          <h3 className="font-semibold mb-1">Pain au levain</h3>
+          <p className="opacity-80">Cuit chaque matin</p>
+        </article>
+        {/* … */}
       </section>
 
-      {/* CONTACT */}
-      <section id="contact" className="mt-12 rounded-2xl p-6 border space-y-2">
-        <h2 className="text-2xl font-semibold">Contact</h2>
-        <p>Adresse : 12 rue du Four, 75000 Paris</p>
-        <p>Tél : 01 23 45 67 89</p>
-        {/* ton formulaire… */}
+      <section id="contact" className="mt-12 card">
+        <h2 className="text-2xl font-semibold mb-2">Contact</h2>
+        {/* … */}
       </section>
     </>
   );

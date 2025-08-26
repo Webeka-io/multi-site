@@ -1,21 +1,37 @@
-// app/layout.tsx (RootLayout)
 import "./globals.css";
-// (optionnel) si tu utilises next/font :
-/*
-import { Geist, Geist_Mono } from "next/font/google";
-const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
-const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" });
-*/
+import React from "react";
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+type ThemeVars = React.CSSProperties & {
+  ["--color-primary"]?: string;
+  ["--color-secondary"]?: string;
+  ["--bg"]?: string;
+  ["--surface"]?: string;
+  ["--border"]?: string;
+  ["--text"]?: string;
+  ["--radius"]?: string;
+  ["--h1-size"]?: string;
+};
+
+const defaultVars: ThemeVars = {
+  "--color-primary": "#111827",
+  "--color-secondary": "#6B7280",
+  "--bg": "#ffffff",
+  "--surface": "#ffffff",
+  "--border": "#e5e7eb",
+  "--text": "#0f172a",
+  "--radius": "16px",
+  "--h1-size": "2.5rem",
+};
+
+export default function RootLayout({
+  children,
+}: { children: React.ReactNode }) {
   return (
     <html lang="fr">
       <body
-        // garde ici les classes de font pour éviter les divergences SSR/Client
-        className={
-          // `${geist.variable} ${mono.variable} min-h-screen bg-white text-gray-900`
-          "min-h-screen bg-white text-gray-900"
-        }
+        data-template="landing"
+        style={defaultVars}
+        className="min-h-screen text-[var(--text)] bg-[var(--bg)]"
       >
         {children}
       </body>

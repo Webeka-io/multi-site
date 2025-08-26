@@ -1,32 +1,42 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ===== BASE : éléments HTML mappés sur des variables ===== */
+@layer base {
+  h1 { font-size: var(--h1-size); line-height: 1.15; font-weight: 700; }
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ===== UTILITAIRES tokenisés (bg/border/texte/radius) ===== */
+@layer utilities {
+  .bg-surface { background: var(--surface); }
+  .border-surface { border-color: var(--border); }
+  .text-main { color: var(--text); }
+  .rounded-token { border-radius: var(--radius); }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ===== COMPOSANTS génériques ===== */
+@layer components {
+  .card {
+    @apply border p-6 shadow-sm;
+    border-color: var(--border);
+    background: var(--surface);
+    border-radius: var(--radius);
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center font-medium px-5 py-3;
+    background: var(--color-primary);
+    color: white;
+    border-radius: var(--radius);
+  }
+  .btn-outline {
+    @apply inline-flex items-center justify-center font-medium px-5 py-3 border;
+    background: transparent;
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+    border-radius: var(--radius);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-:root {
-  --color-primary: #111827;
-  --color-secondary: #6B7280;
-}
-
+/* ===== Overrides par template (facultatif) ===== */
+[data-template="salon-modern"] h1 { --h1-size: 3rem; }   /* 48px */
+[data-template="salon-modern"] .btn { border-radius: 9999px; } /* pill */

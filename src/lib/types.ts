@@ -12,11 +12,24 @@ export type TenantContent = {
   }>;
 };
 
+
+
 export type Tenant = {
   slug: string;
   domains: string[];
   name: string;
   template: TemplateId;
-  theme: { primary: string; secondary: string; font?: string };
   content: TenantContent;
+
+   theme: {
+    primary: string;
+    secondary: string;
+    bg?: string;
+    surface?: string;
+    border?: string;
+    text?: string;
+    radius?: string;
+  };
+
 };
+
