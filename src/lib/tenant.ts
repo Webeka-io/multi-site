@@ -1,4 +1,5 @@
-import { tenants, type Tenant } from "./tenants";
+import { tenants } from "./tenants";
+import type { Tenant } from "./types";
 
 function normalizeHost(host: string) {
   const h = host.split(":")[0].toLowerCase();
