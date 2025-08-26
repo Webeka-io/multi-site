@@ -1,33 +1,42 @@
-// app/[tenant]/layout.tsx
+import "@/app/globals.css";
 import { getTenantBySlug } from "@/lib/tenant";
+import React from "react";
 
-export default function TenantLayout({
+// ✅ On déclare un type pour nos variables CSS custom
+type ThemeVars = React.CSSProperties & {
+  ["--color-primary"]?: string;
+  ["--color-secondary"]?: string;
+};
+
+export default async function TenantLayout({
   children,
   params,
 }: {
   children: React.ReactNode;
-  params: { tenant: string };
+  params: Promise<{ tenant: string }>;
 }) {
-  const tenant = getTenantBySlug(params.tenant);
+  const { tenant } = await params;
+  const t = getTenantBySlug(tenant);
 
-  if (!tenant) {
-    // pas de <html>/<body> ici !
-    return <div>Client inconnu.</div>;
+  if (!t) {
+    return (
+      <html lang="fr">
+        <body>Client inconnu.</body>
+      </html>
+    );
   }
 
-  // On applique le thème sur un <div> conteneur (pas sur <body>)
+  // ✅ Objet de style typé (plus besoin d’ignore)
+  const themeVars: ThemeVars = {
+    "--color-primary": t.theme.primary,
+    "--color-secondary": t.theme.secondary,
+  };
+
   return (
-    <div
-      style={
-        {
-          // @ts-ignore: variables CSS custom
-          "--color-primary": tenant.theme.primary,
-          "--color-secondary": tenant.theme.secondary,
-        } as React.CSSProperties
-      }
-      className="min-h-screen"
-    >
-      {children}
-    </div>
+    <html lang="fr">
+      <body className="min-h-screen bg-white text-gray-900" style={themeVars}>
+        {children}
+      </body>
+    </html>
   );
 }
