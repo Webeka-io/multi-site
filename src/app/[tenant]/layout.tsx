@@ -22,31 +22,28 @@ export default async function TenantLayout({
 }) {
   const { tenant } = await params;
   const t = getTenantBySlug(tenant);
-  if (!t) {
-    return <html lang="fr"><body>Client inconnu.</body></html>;
-  }
+  if (!t) return <>{children}</>; // ou notFound()
 
   const themeVars: ThemeVars = {
-  "--color-primary": t.theme.primary,
-  "--color-secondary": t.theme.secondary,
-  "--bg": t.theme.bg ?? "#ffffff",
-  "--surface": t.theme.surface ?? "#ffffff",
-  "--border": t.theme.border ?? "#e5e7eb",
-  "--text": t.theme.text ?? "#0f172a",
-  "--radius": t.theme.radius ?? "16px",
-  "--h1-size": "2.5rem",
-};
+    "--color-primary": t.theme.primary,
+    "--color-secondary": t.theme.secondary,
+    "--bg": t.theme.bg ?? "#ffffff",
+    "--surface": t.theme.surface ?? "#ffffff",
+    "--border": t.theme.border ?? "#e5e7eb",
+    "--text": t.theme.text ?? "#0f172a",
+    "--radius": t.theme.radius ?? "16px",
+    "--h1-size": "2.5rem",
+  };
 
-return (
-  <html lang="fr">
-    <body
+  // ⬇️ un simple wrapper qui porte les variables + classes
+  return (
+    <div
       data-tenant={t.slug}
       data-template={t.template}
       style={themeVars}
       className="min-h-screen text-[var(--text)] bg-[var(--bg)]"
     >
       {children}
-    </body>
-  </html>
-);
+    </div>
+  );
 }
