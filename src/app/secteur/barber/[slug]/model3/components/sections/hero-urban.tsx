@@ -39,10 +39,18 @@ export default function HeroUrban({ business }: Props) {
           src="/barber-12 (1).webp"
           alt="Barbershop urbain moderne avec néons"
           fill
-          className="object-cover ml-20"
+          className="hidden md:block object-cover"
           style={{ transform: `translateY(${scrollY * 0.5}px)` }}
           priority
         />
+        <Image
+          src="/barbertel-3 (1).webp"
+          alt="Salon de barbier moderne avec fauteuils en cuir"
+          fill
+          className="block md:hidden object-cover"
+          priority
+        />
+
         <div className="absolute inset-0 bg-gradient-to-r from-zinc-900 to-zinc-900/80 "></div>
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent"></div>
       </div>
