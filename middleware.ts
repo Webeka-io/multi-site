@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { matchTenantByDomain } from "@/lib/tenant";
 
-// === À PERSONNALISER ===
-const EXTERNAL_DEST_ORIGIN = "https://www.webeka.fr"; // URL externe de la home
-// ========================
+// À personnaliser
+const EXTERNAL_DEST_ORIGIN = "https://www.webeka.fr";
 
 export function middleware(req: NextRequest) {
   const url = req.nextUrl;
@@ -20,22 +19,32 @@ export function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // 1) En local ou preview vercel.app : pas de redirection
+  // 1) Local / preview Vercel : pas de redirection spéciale
   const isLocal = host.includes("localhost");
   const isPreview = host.endsWith(".vercel.app");
   if (isLocal || isPreview) return NextResponse.next();
 
-  // 2) Rediriger UNIQUEMENT la page "/" vers l’URL externe
-  const destHost = new URL(EXTERNAL_DEST_ORIGIN).host;
-  if (pathname === "/" && host !== destHost) {
-    return NextResponse.redirect(EXTERNAL_DEST_ORIGIN, 308);
+  // 2) Ne rediriger que la home "/"
+  if (pathname === "/") {
+    const destHost = new URL(EXTERNAL_DEST_ORIGIN).host;
+    if (host !== destHost) {
+      return NextResponse.redirect(EXTERNAL_DEST_ORIGIN, 308);
+    }
+    // déjà sur le domaine de destination → ne rien faire
+    return NextResponse.next();
   }
 
-  // 3) Sinon, fonctionnement normal multi-tenant
+  // 3) Multi-tenant pour le reste
   const tenant = matchTenantByDomain(host);
   if (!tenant) {
+    // ⚠️ IMPORTANT : ne pas re-préfixer si la route commence déjà par /landing
+    if (pathname.startsWith("/landing")) {
+      return NextResponse.next(); // servir /landing et ses enfants tels quels
+    }
+    // sinon, fallback vers /landing + path
     return NextResponse.rewrite(new URL(`/landing${pathname}${search}`, req.url));
   }
+
   return NextResponse.rewrite(new URL(`/${tenant.slug}${pathname}${search}`, req.url));
 }
 
