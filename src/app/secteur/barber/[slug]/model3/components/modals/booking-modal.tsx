@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState } from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/app/secteur/barber/[slug]/model3/components/ui/dialog"
 import { Button } from "@/app/secteur/barber/[slug]/model3/components/ui/button"
 import { Input } from "@/app/secteur/barber/[slug]/model3/components/ui/input"
 import { Label } from "@/app/secteur/barber/[slug]/model3/components/ui/label"
