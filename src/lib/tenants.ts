@@ -28,8 +28,8 @@ export const tenants = [
 
   
   {
-    slug: "webeka-io",
-    domains: ["webeka.io", "www.webeka.io"],
+    slug: "",
+    domains: ["", ""],
     name: "Coiffeur du Centre",
     template: "salon-modern",
 
