@@ -60,7 +60,7 @@ export default function Header1() {
             <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center group-hover:bg-gray-800 transition-colors">
               <Scissors className="h-4 w-4 text-white" />
             </div>
-            <span className="text-xl font-semibold text-gray-900">Gentleman's Cut</span>
+            <span className="text-xl font-semibold text-gray-900">Gentleman &apos; s Cut</span>
           </Link>
 
           {/* Status & Info */}
@@ -102,7 +102,7 @@ export default function Header1() {
                     <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center">
                       <Scissors className="h-4 w-4 text-white" />
                     </div>
-                    <span className="text-xl font-semibold">Gentleman's Cut</span>
+                    <span className="text-xl font-semibold">Gentleman &apos; s Cut</span>
                   </div>
 
                   {/* Status Mobile */}
