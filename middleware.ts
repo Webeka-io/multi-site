@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { matchTenantByDomain } from "@/lib/tenant";
 
 // === À PERSONNALISER ===
-const EXTERNAL_DEST_ORIGIN = "https://www.exemple.com"; // où envoyer la home "/"
+const EXTERNAL_DEST_ORIGIN = "https://www.webeka.io"; // où envoyer la home "/"
 const CANONICAL_HOST = "www.exemple.com";               // hôte canonique pour TOUTES les requêtes
 // ========================
 
