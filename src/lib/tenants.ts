@@ -10,7 +10,7 @@ export const tenants = [
      theme: {
       primary: "#8B5CF6",
       secondary: "#F59E0B",
-      bg: "#FFF7ED",       // ← fond page (ex: orange très clair)
+      bg: "linear-gradient(135deg, #fdf2f8 0%, #e0f2fe 100%)",       // ← fond page (ex: orange très clair)
       surface: "#FFFFFF",  // ← fond des cartes
       border: "#F2E8E1",
       text: "#1F2937",

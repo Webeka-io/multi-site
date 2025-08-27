@@ -6,27 +6,30 @@ export function middleware(req: NextRequest) {
   const { pathname } = url;
   const host = req.headers.get("host") || "";
 
-  // Laisse passer les assets / API
-  if (pathname.startsWith("/_next") || pathname.startsWith("/api") || pathname === "/favicon.ico" || pathname.startsWith("/robots") || pathname.startsWith("/sitemap")) {
+  // 1) Laisser passer Next internals, API et TOUS les fichiers (public/assets)
+  if (
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/api") ||
+    pathname === "/favicon.ico" ||
+    /\.(?:png|jpe?g|webp|svg|gif|ico|txt|xml|css|js|map|woff2?|ttf|eot|otf|mp4|webm|ogg|mp3)$/i.test(pathname)
+  ) {
     return NextResponse.next();
   }
 
-  // En dev/local et en preview *.vercel.app → on autorise l'accès path-based (/[tenant])
+  // 2) Local + previews vercel.app : on teste par chemin /[tenant]
   const isLocal = host.includes("localhost");
   const isPreview = host.endsWith(".vercel.app");
   if (isLocal || isPreview) return NextResponse.next();
 
-  // Prod : on détermine le tenant via le domaine
+  // 3) Prod : router par domaine
   const tenant = matchTenantByDomain(host);
   if (!tenant) {
-    // Domaine inconnu → landing générique
     return NextResponse.rewrite(new URL(`/landing${pathname}`, req.url));
   }
-
-  // Réécrit vers /<slug> pour activer app/[tenant]
   return NextResponse.rewrite(new URL(`/${tenant.slug}${pathname}`, req.url));
 }
 
+// Bonus : matcher qui ignore déjà les fichiers (.*\..*)
 export const config = {
-  matcher: ["/((?!_next|favicon.ico).*)"],
+  matcher: ["/((?!_next|api|.*\\..*).*)"],
 };
