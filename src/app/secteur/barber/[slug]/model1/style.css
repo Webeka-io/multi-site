@@ -1,0 +1,132 @@
+
+.theme-model1 {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 0%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 0%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+    --radius: 0rem;
+  }
+
+.font-display {
+  font-family: var(--font-oswald);
+}
+
+.font-serif {
+  font-family: var(--font-lora);
+}
+
+/* Custom animations */
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 1s ease-out;
+}
+
+.animate-slide-up-delay {
+  animation: slide-up 1s ease-out 0.2s both;
+}
+
+.animate-fade-in-delay {
+  animation: fade-in 1s ease-out 0.4s both;
+}
+
+.animate-fade-in-delay-2 {
+  animation: fade-in 1s ease-out 0.6s both;
+}
+
+.animate-fade-in-delay-3 {
+  animation: fade-in 1s ease-out 0.8s both;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ef4444;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #dc2626;
+}
+
+/* Calendar customization */
+.rdp {
+  --rdp-cell-size: 48px;
+  --rdp-caption-font-size: 18px;
+  --rdp-accent-color: #ef4444;
+  --rdp-background-color: #111827;
+  --rdp-accent-color-dark: #ef4444;
+  --rdp-background-color-dark: #111827;
+  --rdp-outline: 2px solid var(--rdp-accent-color);
+  --rdp-outline-selected: 3px solid var(--rdp-accent-color);
+  --rdp-border-radius: 0px;
+}
+
+.rdp-button:hover:not([disabled]):not(.rdp-day_selected) {
+  background-color: #374151;
+}
+
+.rdp-day_selected,
+.rdp-day_selected:focus-visible,
+.rdp-day_selected:hover {
+  background-color: var(--rdp-accent-color) !important;
+  color: white !important;
+}
+
+.rdp-day_today {
+  color: var(--rdp-accent-color) !important;
+  font-weight: bold;
+}
+
+.rdp-caption_label {
+  font-family: var(--font-oswald);
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.rdp-head_cell {
+  font-family: var(--font-oswald);
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 12px;
+}

@@ -1,0 +1,232 @@
+
+.theme-model3 {
+    --background: 244 244% 6%;
+    --foreground: 244 244% 95%;
+    --card: 244 244% 6%;
+    --card-foreground: 244 244% 95%;
+    --popover: 244 244% 6%;
+    --popover-foreground: 244 244% 95%;
+    --primary: 244 244% 95%;
+    --primary-foreground: 244 244% 6%;
+    --secondary: 244 244% 12%;
+    --secondary-foreground: 244 244% 95%;
+    --muted: 244 244% 12%;
+    --muted-foreground: 244 244% 60%;
+    --accent: 244 244% 12%;
+    --accent-foreground: 244 244% 95%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 244 244% 95%;
+    --border: 244 244% 12%;
+    --input: 244 244% 12%;
+    --ring: 244 244% 83.1%;
+    --radius: 0rem;
+  }
+
+.font-display {
+  font-family: var(--font-bebas);
+}
+
+.font-sans {
+  font-family: var(--font-roboto);
+}
+
+/* Industrial/Urban styling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #18181b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #f97316;
+  border-radius: 0px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ea580c;
+}
+
+/* Calendar customization */
+.rdp {
+  --rdp-cell-size: 48px;
+  --rdp-caption-font-size: 18px;
+  --rdp-accent-color: #f97316;
+  --rdp-background-color: #18181b;
+  --rdp-accent-color-dark: #f97316;
+  --rdp-background-color-dark: #18181b;
+  --rdp-outline: 2px solid var(--rdp-accent-color);
+  --rdp-outline-selected: 3px solid var(--rdp-accent-color);
+  --rdp-border-radius: 0px;
+}
+
+.rdp-button:hover:not([disabled]):not(.rdp-day_selected) {
+  background-color: #27272a;
+}
+
+.rdp-day_selected,
+.rdp-day_selected:focus-visible,
+.rdp-day_selected:hover {
+  background-color: var(--rdp-accent-color) !important;
+  color: white !important;
+}
+
+.rdp-day_today {
+  color: var(--rdp-accent-color) !important;
+  font-weight: bold;
+}
+
+.rdp-caption_label {
+  font-family: var(--font-bebas);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.rdp-head_cell {
+  font-family: var(--font-roboto);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+}
+
+/* Industrial animations */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.8s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.8s ease-out;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Geometric hover effects */
+.geometric-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.geometric-hover:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 10px 25px rgba(249, 115, 22, 0.3);
+}
+
+/* Glitch effect for headings */
+.glitch {
+  position: relative;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.glitch::before {
+  animation: glitch-1 0.5s infinite;
+  color: #f97316;
+  z-index: -1;
+}
+
+.glitch::after {
+  animation: glitch-2 0.5s infinite;
+  color: #06b6d4;
+  z-index: -2;
+}
+
+@keyframes glitch-1 {
+  0%,
+  14%,
+  15%,
+  49%,
+  50%,
+  99%,
+  100% {
+    transform: translate(0);
+  }
+  15%,
+  49% {
+    transform: translate(-2px, -1px);
+  }
+}
+
+@keyframes glitch-2 {
+  0%,
+  20%,
+  21%,
+  62%,
+  63%,
+  99%,
+  100% {
+    transform: translate(0);
+  }
+  21%,
+  62% {
+    transform: translate(2px, 1px);
+  }
+}
+
+/* Urban grid pattern */
+.urban-grid {
+  background-image: linear-gradient(rgba(249, 115, 22, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(249, 115, 22, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Neon glow effect */
+.neon-glow {
+  text-shadow: 0 0 5px #f97316, 0 0 10px #f97316, 0 0 15px #f97316, 0 0 20px #f97316;
+}
+
+/* Industrial border */
+.industrial-border {
+  border: 2px solid #3f3f46;
+  border-left: 4px solid #f97316;
+  background: linear-gradient(90deg, rgba(249, 115, 22, 0.1) 0%, transparent 100%);
+}

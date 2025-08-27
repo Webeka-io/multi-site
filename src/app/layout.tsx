@@ -1,6 +1,6 @@
 import "./globals.css";
 import React from "react";
-import { Toaster } from "@/components/ui/sonner"; // ou "@/components/ui/toaster" selon la version générée
+import { Toaster } from "@/app/components/ui/sonner"; // ou "@/components/ui/toaster" selon la version générée
 
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

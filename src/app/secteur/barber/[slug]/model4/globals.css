@@ -1,0 +1,244 @@
+.theme-model4 {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 90%;
+    --input: 0 0% 96%;
+    --ring: 0 0% 9%;
+    --radius: 0.75rem;
+  }
+
+/* Typography */
+.font-sans {
+  font-family: var(--font-inter);
+}
+
+.font-display {
+  font-family: var(--font-poppins);
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Calendar customization */
+.rdp {
+  --rdp-cell-size: 40px;
+  --rdp-caption-font-size: 16px;
+  --rdp-accent-color: #111827;
+  --rdp-background-color: #ffffff;
+  --rdp-accent-color-dark: #111827;
+  --rdp-background-color-dark: #ffffff;
+  --rdp-outline: 2px solid var(--rdp-accent-color);
+  --rdp-outline-selected: 2px solid var(--rdp-accent-color);
+  --rdp-border-radius: 8px;
+}
+
+.rdp-button:hover:not([disabled]):not(.rdp-day_selected) {
+  background-color: #f9fafb;
+}
+
+.rdp-day_selected,
+.rdp-day_selected:focus-visible,
+.rdp-day_selected:hover {
+  background-color: var(--rdp-accent-color) !important;
+  color: white !important;
+}
+
+.rdp-day_today {
+  color: var(--rdp-accent-color) !important;
+  font-weight: 600;
+}
+
+.rdp-caption_label {
+  font-family: var(--font-poppins);
+  font-weight: 500;
+}
+
+.rdp-head_cell {
+  font-family: var(--font-inter);
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: #6b7280;
+}
+
+/* Minimal animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.6s ease-out;
+}
+
+/* Hover effects */
+.hover-lift {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Focus styles */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2;
+}
+
+/* Button variants */
+.btn-minimal {
+  @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition-colors;
+  @apply focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2;
+  @apply disabled:pointer-events-none disabled:opacity-50;
+}
+
+.btn-primary {
+  @apply btn-minimal bg-gray-900 text-white hover:bg-gray-800;
+}
+
+.btn-secondary {
+  @apply btn-minimal bg-gray-100 text-gray-900 hover:bg-gray-200;
+}
+
+.btn-outline {
+  @apply btn-minimal border border-gray-300 bg-white text-gray-700 hover:bg-gray-50;
+}
+
+/* Card styles */
+.card-minimal {
+  @apply rounded-xl border border-gray-100 bg-white p-6 shadow-sm;
+  @apply hover:shadow-md transition-shadow duration-300;
+}
+
+/* Text styles */
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Grid layouts */
+.grid-auto-fit {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.grid-auto-fill {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+/* Spacing utilities */
+.space-y-section > * + * {
+  margin-top: 6rem;
+}
+
+.space-y-content > * + * {
+  margin-top: 1.5rem;
+}
+
+/* Background patterns */
+.bg-dot-pattern {
+  background-image: radial-gradient(circle, #e5e7eb 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.bg-grid-pattern {
+  background-image: linear-gradient(#f3f4f6 1px, transparent 1px), linear-gradient(90deg, #f3f4f6 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Loading states */
+.skeleton {
+  @apply animate-pulse bg-gray-200 rounded;
+}
+
+/* Responsive utilities */
+@media (max-width: 640px) {
+  .text-responsive {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .card-minimal {
+    @apply border-gray-400;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Dark mode support (if needed) */
+@media (prefers-color-scheme: dark) {
+  /* Dark mode styles would go here */
+}

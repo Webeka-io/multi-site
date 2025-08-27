@@ -48,5 +48,7 @@ export const tenants = [
       heroSubtitle: "Coupe, couleur, barbe — sur RDV.",
       ctaLabel: "Prendre RDV",
     },
+
+    
   },
 ] satisfies ReadonlyArray<Tenant>;
