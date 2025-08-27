@@ -3,7 +3,7 @@ import { matchTenantByDomain } from "@/lib/tenant";
 
 // === À PERSONNALISER ===
 const EXTERNAL_DEST_ORIGIN = "https://www.webeka.io"; // où envoyer la home "/"
-const CANONICAL_HOST = "https://www.webeka.io";               // hôte canonique pour TOUTES les requêtes
+const CANONICAL_HOST = "www.webeka.io";               // hôte canonique pour TOUTES les requêtes
 // ========================
 
 export function middleware(req: NextRequest) {
