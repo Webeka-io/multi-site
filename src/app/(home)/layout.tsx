@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-
-export default function HomeLayout({ children }: { children: React.ReactNode }) {
-  redirect("https://webeka.io");
+export default function Home() {
+  redirect("https://www.webeka.fr"); // OK
 }
