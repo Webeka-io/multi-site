@@ -2,8 +2,8 @@ import type { Tenant } from "./types";
 
 export const tenants = [
   {
-    slug: "webeka-fr",
-    domains: ["webeka.fr", "www.webeka.fr"],
+    slug: "",
+    domains: ["", ""],
     name: "Boulangerie Marie",
     template: "bakery-simple",
 
