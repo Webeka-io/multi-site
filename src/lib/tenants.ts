@@ -29,7 +29,7 @@ export const tenants = [
   
   {
     slug: "",
-    domains: ["", "www"],
+    domains: ["", ""],
     name: "Coiffeur du Centre",
     template: "salon-modern",
 
