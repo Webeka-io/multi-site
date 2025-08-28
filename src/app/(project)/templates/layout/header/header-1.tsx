@@ -50,17 +50,17 @@ export default function Header1() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100" : "bg-transparent"
+        isScrolled ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-indigo-100" : "bg-transparent"
       }`}
     >
       <div className="container mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="#home" className="flex items-center gap-3 group">
-            <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center group-hover:bg-gray-800 transition-colors">
+            <div className="w-8 h-8 bg-indigo-900 rounded-lg flex items-center justify-center group-hover:bg-indigo-800 transition-colors">
               <Scissors className="h-4 w-4 text-white" />
             </div>
-            <span className="text-xl font-semibold text-gray-900">Gentleman &apos; s Cut</span>
+            <span className="text-xl font-semibold text-indigo-900">Gentleman &apos; s Cut</span>
           </Link>
 
           {/* Status & Info */}
@@ -72,10 +72,10 @@ export default function Header1() {
               <Link
                 key={item.name}
                 href={item.href}
-                className="text-gray-600 hover:text-gray-900 font-medium transition-colors relative group"
+                className="text-indigo-600 hover:text-indigo-900 font-medium transition-colors relative group"
               >
                 {item.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gray-900 transition-all duration-300 group-hover:w-full"></span>
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-indigo-900 transition-all duration-300 group-hover:w-full"></span>
               </Link>
             ))}
           </nav>
@@ -84,7 +84,7 @@ export default function Header1() {
           <div className="flex items-center gap-4">
             <Button
               asChild
-              className="hidden lg:inline-flex bg-gray-900 hover:bg-gray-800 text-white font-medium px-6 py-2 rounded-lg"
+              className="hidden lg:inline-flex bg-indigo-900 hover:bg-indigo-800 text-white font-medium px-6 py-2 rounded-lg"
             >
               <Link href="#booking">Réserver</Link>
             </Button>
@@ -92,28 +92,28 @@ export default function Header1() {
             {/* Mobile Menu */}
             <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
               <SheetTrigger asChild className="lg:hidden">
-                <Button variant="ghost" size="icon" className="text-gray-600 hover:text-gray-900">
+                <Button variant="ghost" size="icon" className="text-indigo-600 hover:text-indigo-900">
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="bg-white border-l-gray-100 text-gray-900 w-80">
+              <SheetContent side="right" className="bg-white border-l-indigo-100 text-indigo-900 w-80">
                 <div className="flex flex-col h-full pt-8">
                   <div className="flex items-center gap-3 mb-8">
-                    <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center">
+                    <div className="w-8 h-8 bg-indigo-900 rounded-lg flex items-center justify-center">
                       <Scissors className="h-4 w-4 text-white" />
                     </div>
                     <span className="text-xl font-semibold">Gentleman &apos; s Cut</span>
                   </div>
 
                   {/* Status Mobile */}
-                  <div className="mb-8 p-4 bg-gray-50 rounded-lg">
+                  <div className="mb-8 p-4 bg-indigo-50 rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
                       <div className={`w-2 h-2 rounded-full ${isOpen ? "bg-green-500" : "bg-red-500"}`}></div>
                       <span className={`text-sm font-medium ${isOpen ? "text-green-600" : "text-red-600"}`}>
                         {isOpen ? "Ouvert maintenant" : "Fermé"}
                       </span>
                     </div>
-                    <div className="text-sm text-gray-600 space-y-1">
+                    <div className="text-sm text-indigo-600 space-y-1">
                       <div className="flex items-center gap-2">
                         <Clock className="h-4 w-4" />
                         <span>Mar - Sam: 9h - 19h</span>
@@ -134,7 +134,7 @@ export default function Header1() {
                       <Link
                         key={item.name}
                         href={item.href}
-                        className="text-gray-600 hover:text-gray-900 font-medium text-lg transition-colors"
+                        className="text-indigo-600 hover:text-indigo-900 font-medium text-lg transition-colors"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         {item.name}
@@ -144,7 +144,7 @@ export default function Header1() {
                   <div className="mt-auto pb-8">
                     <Button
                       asChild
-                      className="w-full bg-gray-900 hover:bg-gray-800 text-white font-medium py-3 rounded-lg"
+                      className="w-full bg-indigo-900 hover:bg-indigo-800 text-white font-medium py-3 rounded-lg"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       <Link href="#booking">Réserver un rendez-vous</Link>

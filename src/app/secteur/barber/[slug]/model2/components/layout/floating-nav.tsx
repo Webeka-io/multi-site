@@ -37,18 +37,18 @@ export default function FloatingNav({ business }: Props) {
     <>
       {/* Desktop Floating Navigation */}
       <nav
-        className={`fixed top-8 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-700 ease-out ${
+        className={`fixed top-4 md:left-1/2 left-[45%] transform -translate-x-1/2 z-50 transition-all duration-700 ease-out ${
           isVisible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 pointer-events-none"
         }`}
       >
-        <div className="w-full bg-white/90 backdrop-blur-xl border border-stone-200 rounded-full px-8 py-4 shadow-xl shadow-stone-900/10">
+        <div className="w-70 md:w-full bg-white/90 backdrop-blur-xl border border-stone-200 rounded-full md:px-4 md:py-6 px-2 py-2 shadow-xl shadow-stone-900/10">
           <div className="flex items-center gap-8">
             <Link
               href="#home"
               className="flex items-center gap-2 text-lg font-serif font-semibold text-stone-900 hover:text-amber-600 transition-colors"
             >
               <Scissors className="h-10 w-10 text-amber-600" />
-              <span className="text-lg text-center">{entreprise}</span>
+              <span className="text-md text-center">{entreprise}</span>
             </Link>
             <div className="hidden lg:flex items-center gap-6">
               {navItems.slice(1).map((item) => (

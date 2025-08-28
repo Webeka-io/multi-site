@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Playfair_Display, Inter } from "next/font/google"
 import "@/app/secteur/barber/[slug]/model2/globals.css"
+import WhatsAppButton from "./whatsapp/WhatsAppButton"
 
 const playfairDisplay = Playfair_Display({
   subsets: ["latin"],
@@ -28,7 +29,7 @@ export default function RootLayout({
   
       <section
         className={`${playfairDisplay.variable} ${inter.variable} bg-stone-50 text-stone-900 font-sans antialiased`}
-      >
+      ><WhatsAppButton phoneE164="+33753343997"/>
         {children}
       </section>
    

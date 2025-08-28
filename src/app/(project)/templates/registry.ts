@@ -8,6 +8,6 @@ export type TemplateModule = {
 };
 
 export const templateLoaders: Record<TemplateId, () => Promise<TemplateModule>> = {
-  "bakery-simple": () => import("./templates/bakery-simple"),
-  "salon-modern": () => import("./templates/salon-modern"),
+  "bakery-simple": () => import("./sites-clients/bakery-simple"),
+  "salon-modern": () => import("./sites-clients/salon-modern"),
 } as const;

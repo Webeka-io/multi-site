@@ -1,12 +1,16 @@
 import type { Tenant } from "@/lib/types";
 import Header1 from "@/app/(project)/templates/layout/header/header-1";
 import Image from "next/image";
+import { Button } from "@/app/components/ui/button"
+import { Plus } from "lucide-react"
+import PricingPage from "../../sections/pricing/princing-1";
+import { OpeningHoursNavbarNeumorphic } from "../../widgets/opening-hour/components/opening-hours-navbar-neumorphic";
 
 export const routes = [""] as const; // ⬅️ mono-page
 
 export function Layout({ children, tenant }: { children: React.ReactNode; tenant: Tenant }) {
   return (
-    <div className="mx-auto max-w-5xl p-6">
+    <div className="">
       <header className="">
         <Header1/>
       </header>
@@ -20,25 +24,23 @@ export function Layout({ children, tenant }: { children: React.ReactNode; tenant
 export function Page({ tenant }: { tenant: Tenant }) {
   return (
     <>
-      <section className="text-center space-y-4">
-        <h1>{tenant.content.heroTitle}</h1>
-        {tenant.content.heroSubtitle && <p className="opacity-80">{tenant.content.heroSubtitle}</p>}
-        {tenant.content.ctaLabel && <a href="#contact" className="btn">{tenant.content.ctaLabel}</a>}
-      </section>
+     
 
-      <Image
-          src="/sites/boulangerie-marie/logo.png"
-          alt="Salon de barbier moderne avec fauteuils en cuir"
-          fill
-          className="hidden md:block object-cover"
-          priority
-        />
+
+<PricingPage/>
+
+<OpeningHoursNavbarNeumorphic/>
 
       <section id="services" className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
         <article className="card">
           <h3 className="font-semibold mb-1">Pain au levain</h3>
           <p className="opacity-80">Cuit chaque matin</p>
-          
+
+          <Button variant="default">
+              <Plus />
+              Default Button
+            </Button>
+
         </article>
         {/* … */}
       </section>

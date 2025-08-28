@@ -6,7 +6,10 @@ import { Button } from "@/app/secteur/barber/[slug]/model4/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/app/secteur/barber/[slug]/model4/components/ui/sheet"
 import { Menu, Scissors } from "lucide-react"
 import type { Business } from "@/lib/parseSlug"
+import { OpeningHoursNavbarNeumorphic } from "@/app/(project)/templates/widgets/opening-hour/components/opening-hours-navbar-neumorphic"
+
 type Props = { business?: Business }
+
 
 const navItems = [
   { name: "Accueil", href: "#home" },
@@ -37,7 +40,7 @@ export default function MinimalHeader({ business }: Props) {
         isScrolled ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100" : "bg-transparent"
       }`}
     >
-      <div className="container mx-auto px-6 lg:px-8">
+      <div className="container mx-auto px-2 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="#home" className="flex items-center gap-3 group">
@@ -46,6 +49,8 @@ export default function MinimalHeader({ business }: Props) {
             </div>
             <span className="text-xl font-medium text-gray-900">{entreprise}</span>
           </Link>
+
+          <OpeningHoursNavbarNeumorphic></OpeningHoursNavbarNeumorphic>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-8">

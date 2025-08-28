@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Oswald, Lora } from "next/font/google"
 import "@/app/secteur/barber/[slug]/model1/style.css"
+import WhatsAppButton from "@/app/secteur/barber/[slug]/model1/whatsapp/WhatsAppButton"
 
 const oswald = Oswald({
   subsets: ["latin"],
@@ -25,8 +26,9 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-      <section className={`${oswald.variable} ${lora.variable} bg-black text-white font-sans overflow-x-hidden`}>
-        {children}
+      <section className={`${oswald.variable} ${lora.variable} min-h-screen bg-black text-white font-sans overflow-x-hidden`}>
+        <WhatsAppButton phoneE164="+33753343997"/>
+        {children} 
       </section>
   )
 }

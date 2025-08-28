@@ -98,7 +98,7 @@ export default function ServicesGrid() {
                         const modal = document.getElementById("booking-modal")
                         if (modal) modal.click()
                       }}
-                      className="w-full bg-transparent border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white font-bold py-3 rounded-none transition-all duration-300"
+                      className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white ld py-3 rounded-none transition-all duration-300"
                     >
                       RÉSERVER CE SERVICE
                     </Button>

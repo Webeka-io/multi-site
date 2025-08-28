@@ -2,18 +2,18 @@ import type { Tenant } from "./types";
 
 export const tenants = [
   {
-    slug: "",
+    slug: "webeka-fr",
     domains: ["", "wwww"],
     name: "Boulangerie Marie",
     template: "bakery-simple",
 
      theme: {
-      primary: "#8B5CF6",
-      secondary: "#F59E0B",
+      primary: "#fff",
+      secondary: "#fff",
       bg: "linear-gradient(135deg, #fdf2f8 0%, #e0f2fe 100%)",       // ← fond page (ex: orange très clair)
-      surface: "#FFFFFF",  // ← fond des cartes
-      border: "#F2E8E1",
-      text: "#1F2937",
+      surface: "##fff",  // ← fond des cartes
+      border: "##fff",
+      text: "##fff",
       radius: "16px",
     },
     

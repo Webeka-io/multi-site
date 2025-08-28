@@ -184,10 +184,10 @@ export default function Navigation({ business }: Props) {
                         setIsOpen(false)
                         openCalendly(e)
                       }}
-                      className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold py-4 rounded-none border-2 border-red-500 text-lg mt-8"
+                      className="w-2/3 mx-auto bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold py-4 rounded-none border-2 border-red-500 text-lg mt-8"
                       aria-label="Réserver un créneau"
-                    >
-                      {entrepriseUpper ? `RÉSERVER CHEZ ${entrepriseUpper}` : "RÉSERVER MAINTENANT"}
+                    > RÉSERVEZ
+                      {/*{entrepriseUpper ? `RÉSERVER CHEZ ${entrepriseUpper}` : "RÉSERVER MAINTENANT"}*/}
                     </Button>
                   </div>
                 </div>

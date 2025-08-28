@@ -11,6 +11,7 @@ import ContactSection from "@/app/secteur/barber/[slug]/model1/components/sectio
 import { parseSlug, type Business } from "@/lib/parseSlug"
 import { Oswald, Lora } from "next/font/google"
 import type { Metadata } from "next"
+import WhatsAppButton from "@/app/(project)/templates/widgets/whatsapp/WhatsAppButton"
 
 const oswald = Oswald({ subsets: ["latin"], variable: "--font-oswald" })
 const lora   = Lora({ subsets: ["latin"],  variable: "--font-lora" })
@@ -30,7 +31,9 @@ export default function Page(props: any) {
         <TestimonialsCarousel />
         <GalleryMasonry />
         <ContactSection business={business}  />
+        
       </main>
+     
        {/* <BookingModal />*/}
     </div>
   )

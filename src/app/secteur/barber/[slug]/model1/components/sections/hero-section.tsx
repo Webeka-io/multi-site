@@ -5,9 +5,9 @@ import Image from "next/image"
 import { Button } from "@/app/components/ui/button"
 import { ChevronDown } from "lucide-react"
 import type { Business } from "@/lib/parseSlug"
+import { OpeningHoursNavbarNeon } from "@/app/(project)/templates/widgets/opening-hour/components/opening-hours-navbar-neon"
 
-
-type Props = { business?: Business }
+type Props = { business?: Business }        
 
 export default function HeroSection({ business }: Props) {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
@@ -54,14 +54,18 @@ export default function HeroSection({ business }: Props) {
       </div>
 
       <div
-        className="absolute inset-0 opacity-30"
-        style={{
-          background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(239, 68, 68, 0.3) 0%, transparent 50%)`,
-        }}
-      />
+  className="absolute inset-0 opacity-30"
+  style={{
+    background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(239, 68, 68, 0.3) 0%, transparent 50%)`,
+  }}
+/>
+
 
       <div className="relative z-10 text-center px-6 max-w-6xl mx-auto">
         <div className="space-y-8">
+          <div className="mt-5">
+          <OpeningHoursNavbarNeon/>
+          </div>
           <div className="overflow-hidden">
             <h1 className="text-6xl md:text-8xl lg:text-9xl font-display font-black text-white leading-none tracking-tighter animate-slide-up">
               {namePrefix && <span>{namePrefix}&nbsp;</span>} <br />

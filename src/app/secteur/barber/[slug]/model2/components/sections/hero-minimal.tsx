@@ -3,6 +3,8 @@ import { Button } from "@/app/secteur/barber/[slug]/model2/components/ui/button"
 import Link from "next/link"
 import { ArrowDown } from "lucide-react"
 import type { Business } from "@/lib/parseSlug"
+import { OpeningHoursNavbarGlass } from "@/app/(project)/templates/widgets/opening-hour/components/opening-hours-navbar-glass"
+
 type Props = { business?: Business }
 
 export default function HeroMinimal({ business }: Props) {
@@ -41,6 +43,9 @@ export default function HeroMinimal({ business }: Props) {
       <div className="container mx-auto px-6 lg:px-8 relative z-10">
         <div className="max-w-4xl">
           <div className="space-y-8">
+
+          <OpeningHoursNavbarGlass/>
+
             <div className="space-y-4">
               <p className="text-amber-600 font-medium tracking-wider uppercase text-sm">
                 Maison de Barbier à {ville}
