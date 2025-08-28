@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { Clock, MapPin, Phone } from "lucide-react"
-import { Popover, PopoverContent, PopoverTrigger } from "@/app/(project)/templates/widgets/opening-hour/components/ui/popover"
-import { Button } from "@/app/(project)/templates/widgets/opening-hour/components/ui/button"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Button } from "@/components/ui/button"
 
 const openingHours = {
   lundi: { open: "09:00", close: "18:00" },
@@ -14,6 +14,10 @@ const openingHours = {
   samedi: { open: "09:00", close: "17:00" },
   dimanche: { closed: true },
 }
+
+// ✅ type guard pour accéder proprement à `closed`
+const hasClosed = (h: unknown): h is { closed: boolean } =>
+  !!h && typeof h === "object" && "closed" in (h as any) && !!(h as any).closed
 
 export function OpeningHoursNavbarNeumorphic() {
   const [isOpen, setIsOpen] = useState(false)
@@ -34,7 +38,7 @@ export function OpeningHoursNavbarNeumorphic() {
 
     const todayHours = openingHours[currentDay as keyof typeof openingHours]
 
-    if (todayHours.closed) {
+    if (hasClosed(todayHours)) {
       return { isOpen: false, message: "Fermé aujourd'hui" }
     }
 
@@ -100,7 +104,7 @@ export function OpeningHoursNavbarNeumorphic() {
                 >
                   <span className="capitalize font-medium text-gray-700 dark:text-gray-300">{day}</span>
                   <span className="text-gray-600 dark:text-gray-400">
-                    {hours.closed ? "Fermé" : `${hours.open} - ${hours.close}`}
+                    {hasClosed(hours) ? "Fermé" : `${hours.open} - ${hours.close}`}
                   </span>
                 </div>
               ))}

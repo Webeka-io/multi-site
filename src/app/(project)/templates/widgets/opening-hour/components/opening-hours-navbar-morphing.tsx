@@ -15,6 +15,10 @@ const openingHours = {
   dimanche: { closed: true },
 }
 
+// --- petit helper pour typer proprement l’accès à "closed"
+const hasClosed = (h: unknown): h is { closed: boolean } =>
+  !!h && typeof h === "object" && "closed" in (h as any) && !!(h as any).closed
+
 export function OpeningHoursNavbarMorphing() {
   const [isOpen, setIsOpen] = useState(false)
   const [currentTime, setCurrentTime] = useState(new Date())
@@ -42,7 +46,8 @@ export function OpeningHoursNavbarMorphing() {
 
     const todayHours = openingHours[currentDay as keyof typeof openingHours]
 
-    if (todayHours.closed) {
+    // ✅ plus d'erreur TS ici
+    if (hasClosed(todayHours)) {
       return { isOpen: false, message: "Fermé aujourd'hui" }
     }
 
@@ -149,7 +154,7 @@ export function OpeningHoursNavbarMorphing() {
                 >
                   <span className="capitalize font-medium text-gray-700 dark:text-gray-300">{day}</span>
                   <span className="text-gray-600 dark:text-gray-400">
-                    {hours.closed ? "Fermé" : `${hours.open} - ${hours.close}`}
+                    {hasClosed(hours) ? "Fermé" : `${hours.open} - ${hours.close}`}
                   </span>
                 </div>
               ))}

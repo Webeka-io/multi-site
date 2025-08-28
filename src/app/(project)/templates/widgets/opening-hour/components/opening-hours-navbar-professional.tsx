@@ -16,6 +16,10 @@ const openingHours = {
   dimanche: { closed: true },
 }
 
+// ✅ petit helper pour typer l’accès à "closed"
+const hasClosed = (h: unknown): h is { closed: boolean } =>
+  !!h && typeof h === "object" && "closed" in (h as any) && !!(h as any).closed
+
 export function OpeningHoursNavbarProfessional() {
   const [isOpen, setIsOpen] = useState(false)
   const [currentTime, setCurrentTime] = useState(new Date())
@@ -35,7 +39,8 @@ export function OpeningHoursNavbarProfessional() {
 
     const todayHours = openingHours[currentDay as keyof typeof openingHours]
 
-    if (todayHours.closed) {
+    // ⬇️ plus d’accès direct à .closed
+    if (hasClosed(todayHours)) {
       return { isOpen: false, message: "Fermé aujourd'hui" }
     }
 
@@ -108,7 +113,8 @@ export function OpeningHoursNavbarProfessional() {
               </h4>
               <div className="grid gap-2">
                 {Object.entries(openingHours).map(([day, hours]) => {
-                  const isToday = new Date().toLocaleDateString("fr-FR", { weekday: "long" }).toLowerCase() === day
+                  const isToday =
+                    new Date().toLocaleDateString("fr-FR", { weekday: "long" }).toLowerCase() === day
                   return (
                     <div
                       key={day}
@@ -133,7 +139,7 @@ export function OpeningHoursNavbarProfessional() {
                           isToday ? "text-blue-800 dark:text-blue-300 font-medium" : "text-gray-600 dark:text-gray-400"
                         }`}
                       >
-                        {hours.closed ? "Fermé" : `${hours.open} - ${hours.close}`}
+                        {hasClosed(hours) ? "Fermé" : `${hours.open} - ${hours.close}`}
                       </span>
                     </div>
                   )
