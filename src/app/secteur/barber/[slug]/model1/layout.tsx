@@ -27,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
       <section className={`${oswald.variable} ${lora.variable} min-h-screen bg-black text-white font-sans overflow-x-hidden`}>
-        <WhatsAppButton phoneE164="+33753343997"/>
+        <WhatsAppButton phoneE164="+33784204626"/>
         {children} 
       </section>
   )

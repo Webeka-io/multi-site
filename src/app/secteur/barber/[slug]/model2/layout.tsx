@@ -29,7 +29,7 @@ export default function RootLayout({
   
       <section
         className={`${playfairDisplay.variable} ${inter.variable} bg-stone-50 text-stone-900 font-sans antialiased`}
-      ><WhatsAppButton phoneE164="+33753343997"/>
+      ><WhatsAppButton phoneE164="+33784204626"/>
         {children}
       </section>
    
