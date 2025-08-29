@@ -54,29 +54,29 @@ export function OpeningHoursNavbarNeon() {
           variant="ghost"
           className={`relative h-10 px-4 bg-black border-2 transition-all duration-300 rounded-lg overflow-hidden group ${
             currentlyOpen
-              ? "border-red-400 shadow-red-400/25 hover:shadow-red-400/40"
+              ? "border-green-400 shadow-green-400/25 hover:shadow-green-400/40"
               : "border-red-400 shadow-red-400/25 hover:shadow-red-400/40"
           } shadow-lg hover:shadow-xl`}
         >
           <div
             className={`absolute inset-0 bg-gradient-to-r opacity-10 group-hover:opacity-20 transition-opacity ${
-              currentlyOpen ? "from-red-400 to-blue-400" : "from-red-400 to-pink-400"
+              currentlyOpen ? "from-green-400 to-blue-400" : "from-red-400 to-pink-400"
             }`}
           />
 
           <div className="relative flex items-center gap-2">
             <div className="relative">
-              {currentlyOpen ? <Zap className="h-4 w-4 text-red-400" /> : <Clock className="h-4 w-4 text-red-400" />}
+              {currentlyOpen ? <Zap className="h-4 w-4 text-green-400" /> : <Clock className="h-4 w-4 text-red-400" />}
               <div
                 className={`absolute inset-0 ${
-                  currentlyOpen ? "text-red-400" : "text-red-400"
+                  currentlyOpen ? "text-green-400" : "text-red-400"
                 } animate-ping opacity-75`}
               >
                 {currentlyOpen ? <Zap className="h-4 w-4" /> : <Clock className="h-4 w-4" />}
               </div>
             </div>
 
-            <span className={`text-sm font-bold tracking-wide ${currentlyOpen ? "text-red-400" : "text-red-400"}`}>
+            <span className={`text-sm font-bold tracking-wide ${currentlyOpen ? "text-green-400" : "text-red-400"}`}>
               {currentlyOpen ? "OUVERT" : "FERMÉ"}
             </span>
           </div>
@@ -91,11 +91,11 @@ export function OpeningHoursNavbarNeon() {
             <div
               className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold border-2 ${
                 currentlyOpen
-                  ? "bg-red-400/10 text-red-400 border-red-400/50"
+                  ? "bg-green-400/10 text-green-400 border-green-400/50"
                   : "bg-red-400/10 text-red-400 border-red-400/50"
               }`}
             >
-              <div className={`w-2 h-2 rounded-full ${currentlyOpen ? "bg-red-400" : "bg-red-400"} animate-pulse`} />
+              <div className={`w-2 h-2 rounded-full ${currentlyOpen ? "bg-green-400" : "bg-red-400"} animate-pulse`} />
               {currentlyOpen ? "ACTUELLEMENT OUVERT" : "ACTUELLEMENT FERMÉ"}
             </div>
           </div>
@@ -112,18 +112,18 @@ export function OpeningHoursNavbarNeon() {
                     key={day}
                     className={`flex justify-between items-center py-2 px-3 rounded-lg border transition-all duration-200 ${
                       isToday
-                        ? "bg-red-400/10 border-red-400/50 shadow-red-400/25"
+                        ? "bg-green-400/10 border-green-400/50 shadow-green-400/25"
                         : "bg-gray-900/50 border-gray-700/50 hover:border-gray-600/50"
                     } shadow-sm`}
                   >
                     <span
                       className={`text-sm uppercase font-semibold tracking-wide ${
-                        isToday ? "text-red-400" : "text-gray-300"
+                        isToday ? "text-green-400" : "text-gray-300"
                       }`}
                     >
                       {day}
                     </span>
-                    <span className={`text-sm font-mono ${isToday ? "text-red-400 font-bold" : "text-gray-400"}`}>
+                    <span className={`text-sm font-mono ${isToday ? "text-green-400 font-bold" : "text-gray-400"}`}>
                       {hours.open && hours.close ? `${hours.open} - ${hours.close}` : "FERMÉ"}
                     </span>
                   </div>
