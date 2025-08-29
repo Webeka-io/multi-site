@@ -5,7 +5,7 @@ import Image from "next/image"
 import { Button } from "@/app/components/ui/button"
 import { ChevronDown } from "lucide-react"
 import type { Business } from "@/lib/parseSlug"
-import { OpeningHoursNavbarNeon } from "@/app/(project)/templates/widgets/opening-hour/components/opening-hours-navbar-neon"
+import { OpeningHoursNavbarGlass } from "../../opening-hour/opening-hours-navbar-glass"
 
 type Props = { business?: Business }        
 
@@ -64,7 +64,7 @@ export default function HeroSection({ business }: Props) {
       <div className="relative z-10 text-center px-6 max-w-6xl mx-auto">
         <div className="space-y-8">
           <div className="mt-5">
-          <OpeningHoursNavbarNeon/>
+          <OpeningHoursNavbarGlass/>
           </div>
           <div className="overflow-hidden">
             <h1 className="text-6xl md:text-8xl lg:text-9xl font-display font-black text-white leading-none tracking-tighter animate-slide-up">
