@@ -110,7 +110,7 @@ export default function WhatsAppButton({
             <div className="p-3 border-t">
               <button
                 onClick={handleOpenWhatsApp}
-                className="w-full rounded-full bg-red-500 text-white py-2 font-medium hover:opacity-90"
+                className="w-full rounded-full bg-amber-600 text-white py-2 font-medium hover:opacity-90"
               >
                 Lancer le chat
               </button>
