@@ -62,8 +62,8 @@ export default function HeroSection({ business }: Props) {
 
 
       <div className="relative z-10 text-center px-6 max-w-6xl mx-auto">
-        <div className="space-y-8">
-          <div className="mt-5">
+        <div className=" space-y-7 mt-8">
+          <div className="">
           <OpeningHoursNavbarGlass/>
           </div>
           <div className="overflow-hidden">
@@ -102,7 +102,7 @@ export default function HeroSection({ business }: Props) {
             </div>
           )}
 
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center pt-8 animate-fade-in-delay-3">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center animate-fade-in-delay-3">
             <Button
               onClick={() => document.getElementById("booking-modal")?.click()}
               size="lg"
@@ -122,7 +122,7 @@ export default function HeroSection({ business }: Props) {
         </div>
       </div>
 
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 animate-bounce">
         <ChevronDown className="h-8 w-8 text-white/60" />
       </div>
     </section>
