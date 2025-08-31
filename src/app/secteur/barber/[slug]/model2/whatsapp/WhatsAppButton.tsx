@@ -17,7 +17,7 @@ export default function WhatsAppButton({
   message = "Bonjour, je veux mon site !",
   label = "WhatsApp",
   className,
-  customPosition = { bottom: 24, right: 10 },
+  customPosition = { bottom: 34, right: 20 },
   theme = "dark",
 }: WhatsAppButtonProps) {
   const [mounted, setMounted] = useState(false);
@@ -47,8 +47,8 @@ export default function WhatsAppButton({
         aria-label={`${label} - Ouvrir une conversation`}
         className={`fixed flex items-center justify-center rounded-full shadow transition-transform duration-200 ${className ?? ""}`}
         style={{
-          width: 43,
-          height: 43,
+          width: 46,
+          height: 46,
           zIndex: 1050,           // ou className: z-[1050]
           cursor: "pointer",
           ...baseBtnStyle,
