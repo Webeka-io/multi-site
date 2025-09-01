@@ -42,7 +42,7 @@ export default function FloatingNav({ business }: Props) {
         }`}
       >
         <div className=" mt-2 w-70 md:w-full bg-white/90 backdrop-blur-xl border border-stone-200 rounded-full md:px-4 md:py-6 px-2 py-2 shadow-xl shadow-stone-900/10">
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-8">  
             <Link
               href="#home"
               className="flex items-center gap-2 text-lg font-serif font-semibold text-stone-900 hover:text-amber-600 transition-colors"
