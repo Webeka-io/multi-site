@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
     return Response.json({ translations: [] });
   }
 
-  const apiKey = process.env.DEEPL_API_KEY || "";
+  const apiKey = process.env.DEEPL_API_KEY || "e4edbb79-bb31-4eaa-8db4-98f4b30843ee:fx";
   const base = (process.env.DEEPL_API_BASE || "https://api-free.deepl.com").replace(/\/+$/, "");
   const endpoint = `${base}/v2/translate`;
 

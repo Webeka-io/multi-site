@@ -3,7 +3,7 @@
 
 import React, { useMemo, useState } from "react";
 
-const TARGET = "https://bombon.framer.website/";
+const TARGET = "https://gardener.framer.media/";
 
 function parseRemove(input: string): string[] {
   return input
@@ -23,7 +23,7 @@ export default function Page() {
 
   // Sélecteurs à supprimer (le badge Framer est déjà géré côté proxy, on le laisse ici pour le montrer)
   const [removeInput, setRemoveInput] = useState<string>(
-    ".__framer-badge-container, #__framer-badge-container"
+    ".__framer-badge-container, #__framer-badge-container, .framer-1fin31n-container, #framer-1fin31n-container,.framer-rcd755-container,#framer-rcd755-container,"
   );
 
   const proxySrc = useMemo(() => {

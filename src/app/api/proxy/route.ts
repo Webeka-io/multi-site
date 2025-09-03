@@ -5,7 +5,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 // Autoriser ce(s) domaine(s) en proxy
-const ALLOWLIST = ["bombon.framer.website"];
+const ALLOWLIST = ["gardener.framer.media"];
 function isAllowedHost(hostname: string) {
   const h = hostname.toLowerCase();
   return ALLOWLIST.some((d) => h === d || h.endsWith(`.${d}`));
