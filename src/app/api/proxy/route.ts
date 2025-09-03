@@ -4,8 +4,8 @@ import { NextRequest } from "next/server";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-// Autoriser ce(s) domaine(s) en proxy
-const ALLOWLIST = ["gardener.framer.media"];
+// Domaines autorisés à être proxyfiés
+const ALLOWLIST = ["pawfect.framer.media"];
 function isAllowedHost(hostname: string) {
   const h = hostname.toLowerCase();
   return ALLOWLIST.some((d) => h === d || h.endsWith(`.${d}`));
@@ -19,14 +19,14 @@ function parseRemove(params: URLSearchParams) {
       if (t) out.push(t);
     });
   }
-  // Supprimer le badge Framer par défaut
+  // Badge Framer par défaut
   out.push("#__framer-badge-container", ".__framer-badge-container");
   return Array.from(new Set(out)).slice(0, 50);
 }
 
 export async function GET(req: NextRequest) {
   const url = req.nextUrl.searchParams.get("url");
-  const translateTo = (req.nextUrl.searchParams.get("translate") || "").trim().toLowerCase(); // ex: "fr"
+  const translateTo = (req.nextUrl.searchParams.get("translate") || "").trim().toLowerCase(); // "fr"…
   const disableJs = req.nextUrl.searchParams.get("disableJs") === "1";
   const removeList = parseRemove(req.nextUrl.searchParams);
 
@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
   if (!/^https?:$/.test(u.protocol)) return new Response("Only http/https", { status: 400 });
   if (!isAllowedHost(u.hostname)) return new Response("Domain not allowed", { status: 403 });
 
-  // origine publique de TON site (utile pour URLs absolues en présence de <base>)
+  // Origine de TON site (utile pour l’injector externe)
   const proto = req.headers.get("x-forwarded-proto") || "https";
   const host = req.headers.get("host") || "";
   const selfOrigin = `${proto}://${host}`;
@@ -61,14 +61,19 @@ export async function GET(req: NextRequest) {
 
   let html = await upstream.text();
 
-  // 1) <base> + CSS pour cacher immédiatement les éléments à retirer
+  // 1) <base> + CSS de pré-hide (pour éviter le flash) + CSS de masquage immédiat des éléments à retirer
   if (/<head[^>]*>/i.test(html)) {
-    const cssHide = removeList.length
+    const cssHideSelected = removeList.length
       ? `${removeList.join(",")}{display:none !important;visibility:hidden !important}`
       : "";
+    // Si traduction demandée, on cache le document (opacity:0) jusqu’à la 1ʳᵉ passe
+    const prehide = translateTo ? `<style id="proxy-prehide">html{opacity:0 !important}</style>` : "";
     html = html.replace(
       /<head[^>]*>/i,
-      (m) => `${m}<base href="${u.origin}">` + (cssHide ? `<style id="proxy-hide">${cssHide}</style>` : "")
+      (m) =>
+        `${m}<base href="${u.origin}">` +
+        prehide +
+        (cssHideSelected ? `<style id="proxy-hide">${cssHideSelected}</style>` : "")
     );
   }
 
@@ -78,7 +83,7 @@ export async function GET(req: NextRequest) {
     html = html.replace(/<link[^>]+rel=["']modulepreload["'][^>]*>/gi, "");
   }
 
-  // 3) Injection du script **externe** (pas inline) pour traduction & suppression
+  // 3) Injection du script **externe** (CSP-safe) pour traduction & suppression
   if (translateTo || removeList.length) {
     const sp = new URLSearchParams();
     if (translateTo) sp.set("translate", translateTo);
@@ -86,15 +91,10 @@ export async function GET(req: NextRequest) {
     const injectorSrc = `${selfOrigin}/api/injector?${sp.toString()}`;
     const tag = `<script src="${injectorSrc}" defer></script>`;
 
-    html = /<\/body>/i.test(html)
-      ? html.replace(/<\/body>/i, tag + "</body>")
-      : html + tag;
+    html = /<\/body>/i.test(html) ? html.replace(/<\/body>/i, tag + "</body>") : html + tag;
 
     if (translateTo) {
-      html = html.replace(
-        /<html([^>]*)lang=["'][^"']*["']([^>]*)>/i,
-        '<html$1 lang="fr"$2>'
-      );
+      html = html.replace(/<html([^>]*)lang=["'][^"']*["']([^>]*)>/i, '<html$1 lang="fr"$2>');
     }
   }
 
