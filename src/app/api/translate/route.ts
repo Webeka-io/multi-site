@@ -4,57 +4,49 @@ import { NextRequest } from "next/server";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-// POST { texts: string[], to?: string }
-// -> { map: Record<original, translated> }
 export async function POST(req: NextRequest) {
-  try {
-    const { texts, to = "fr" } = await req.json();
-    if (!Array.isArray(texts) || texts.length === 0) {
-      return Response.json({ map: {} });
-    }
+  const { searchParams } = new URL(req.url);
+  const targetLang = (searchParams.get("tl") || "fr").toUpperCase();
+  const body = await req.json().catch(() => ({}));
+  const strings: string[] = Array.isArray(body?.strings) ? body.strings : [];
 
-    const key = process.env.DEEPL_API_KEY;
-    if (!key) {
-      return new Response("Missing DEEPL_API_KEY", { status: 500 });
-    }
-
-    // DeepL Free: https://api-free.deepl.com/v2/translate
-    // DeepL Pro:  https://api.deepl.com/v2/translate
-    const endpoint =
-      process.env.DEEPL_API_ENDPOINT ||
-      "https://api-free.deepl.com/v2/translate";
-
-    // Dé-duplication côté serveur par sécurité
-    const unique = Array.from(new Set(texts.filter(Boolean)));
-
-    const params = new URLSearchParams();
-    params.set("target_lang", to.toUpperCase());
-    for (const t of unique) params.append("text", t);
-
-    const resp = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        Authorization: `DeepL-Auth-Key ${key}`,
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: params,
-    });
-
-    if (!resp.ok) {
-      const err = await resp.text();
-      return new Response(`DeepL error: ${err}`, { status: 502 });
-    }
-
-    const data: any = await resp.json();
-    const out: Record<string, string> = {};
-    for (let i = 0; i < unique.length; i++) {
-      const src = unique[i];
-      const translated = data.translations?.[i]?.text ?? src;
-      out[src] = translated;
-    }
-
-    return Response.json({ map: out }, { headers: { "cache-control": "no-store" } });
-  } catch (e: any) {
-    return new Response(`Translate failed: ${e?.message || e}`, { status: 500 });
+  if (strings.length === 0) {
+    return Response.json({ translations: [] });
   }
+
+  const apiKey = process.env.DEEPL_API_KEY || "";
+  const base = (process.env.DEEPL_API_BASE || "https://api-free.deepl.com").replace(/\/+$/, "");
+  const endpoint = `${base}/v2/translate`;
+
+  // Pas de clé => renvoie tel quel (affichage identique)
+  if (!apiKey) {
+    return Response.json({ translations: strings });
+  }
+
+  const params = new URLSearchParams();
+  for (const s of strings) params.append("text", s);
+  params.set("target_lang", targetLang);
+  params.set("preserve_formatting", "1");
+  params.set("split_sentences", "1");
+
+  const res = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      Authorization: `DeepL-Auth-Key ${apiKey}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: params.toString(),
+  });
+
+  if (!res.ok) {
+    const txt = await res.text().catch(() => "");
+    return new Response(`Translate error: ${res.status} ${txt}`, { status: 500 });
+  }
+
+  const json = await res.json().catch(() => null);
+  const translations: string[] = Array.isArray(json?.translations)
+    ? json.translations.map((t: any) => String(t.text ?? ""))
+    : strings;
+
+  return Response.json({ translations });
 }
