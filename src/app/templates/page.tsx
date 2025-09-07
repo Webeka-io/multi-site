@@ -15,7 +15,7 @@ export default function Page() {
     top: 0,
     left: 0,
     width: "100%",
-    height: "130%",        // dépasse de 5% pour combler le rognage
+    height: "100%",        // dépasse de 5% pour combler le rognage
     border: "0",
   };
 
@@ -46,7 +46,7 @@ export default function Page() {
 
       <div style={wrapStyle}>
         <iframe
-          src="https://portavia.framer.website/"
+          src="https://jovial-sphere-930683.framer.app/"
           style={iframeStyle}
           sandbox="allow-scripts allow-same-origin"
         />

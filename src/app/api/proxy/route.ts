@@ -5,7 +5,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 // Domaines autorisés à être proxyfiés
-const ALLOWLIST = ["pawfect.framer.media"];
+const ALLOWLIST = ["jovial-sphere-930683.framer.app", "familiar-report-107436.framer.app", "genial-cogwheel-567577.framer.app","welcome-pitch-778087.framer.app", "ancient-favorites-079735.framer.app", "energetic-minimalist-299317.framer.app","jolly-overlays-247575.framer.app","hopeful-copywriter-299860.framer.app"];
 function isAllowedHost(hostname: string) {
   const h = hostname.toLowerCase();
   return ALLOWLIST.some((d) => h === d || h.endsWith(`.${d}`));
@@ -26,7 +26,6 @@ function parseRemove(params: URLSearchParams) {
 
 export async function GET(req: NextRequest) {
   const url = req.nextUrl.searchParams.get("url");
-  const translateTo = (req.nextUrl.searchParams.get("translate") || "").trim().toLowerCase(); // "fr"…
   const disableJs = req.nextUrl.searchParams.get("disableJs") === "1";
   const removeList = parseRemove(req.nextUrl.searchParams);
 
@@ -66,13 +65,10 @@ export async function GET(req: NextRequest) {
     const cssHideSelected = removeList.length
       ? `${removeList.join(",")}{display:none !important;visibility:hidden !important}`
       : "";
-    // Si traduction demandée, on cache le document (opacity:0) jusqu’à la 1ʳᵉ passe
-    const prehide = translateTo ? `<style id="proxy-prehide">html{opacity:0 !important}</style>` : "";
     html = html.replace(
       /<head[^>]*>/i,
       (m) =>
         `${m}<base href="${u.origin}">` +
-        prehide +
         (cssHideSelected ? `<style id="proxy-hide">${cssHideSelected}</style>` : "")
     );
   }
@@ -83,19 +79,13 @@ export async function GET(req: NextRequest) {
     html = html.replace(/<link[^>]+rel=["']modulepreload["'][^>]*>/gi, "");
   }
 
-  // 3) Injection du script **externe** (CSP-safe) pour traduction & suppression
-  if (translateTo || removeList.length) {
+  // 3) Injection du script **externe** uniquement pour suppression (plus de trad)
+  if (removeList.length) {
     const sp = new URLSearchParams();
-    if (translateTo) sp.set("translate", translateTo);
     for (const sel of removeList) sp.append("remove", sel);
     const injectorSrc = `${selfOrigin}/api/injector?${sp.toString()}`;
     const tag = `<script src="${injectorSrc}" defer></script>`;
-
     html = /<\/body>/i.test(html) ? html.replace(/<\/body>/i, tag + "</body>") : html + tag;
-
-    if (translateTo) {
-      html = html.replace(/<html([^>]*)lang=["'][^"']*["']([^>]*)>/i, '<html$1 lang="fr"$2>');
-    }
   }
 
   return new Response(html, {
