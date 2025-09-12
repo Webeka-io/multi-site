@@ -5,7 +5,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 // Domaines autorisés à être proxyfiés
-const ALLOWLIST = ["functional-assistant-097860.framer.app", "secured-principles-292763.framer.app","generous-tools-627083.framer.app","daring-remember-772934.framer.app"];
+const ALLOWLIST = ["genial-cogwheel-567577.framer.app", "secured-principles-292763.framer.app","generous-tools-627083.framer.app","daring-remember-772934.framer.app"];
 function isAllowedHost(hostname: string) {
   const h = hostname.toLowerCase();
   return ALLOWLIST.some((d) => h === d || h.endsWith(`.${d}`));
