@@ -3,7 +3,7 @@
 
 import React, { useMemo, useState } from "react";
 
-const TARGET = "https://welcome-pitch-778087.framer.app/";
+const TARGET = "https://generous-tools-627083.framer.app/fr/";
 
 function parseRemove(input: string): string[] {
   return input
