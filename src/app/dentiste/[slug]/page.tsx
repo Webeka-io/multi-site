@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
-const TARGET = "https://genial-cogwheel-567577.framer.app/";
+const TARGET = "https://beminee.webflow.io/";
 const ROUTE_SEGMENT = "dentiste"; // le segment à nettoyer de l'URL
 
 function parseRemove(input: string): string[] {
