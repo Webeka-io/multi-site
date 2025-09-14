@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 const TARGET = "https://genial-cogwheel-567577.framer.app/";
-const ROUTE_SEGMENT = "maquette-1"; // nom de ta route
+const ROUTE_SEGMENT = "dentiste"; // nom de ta route
 
 function parseRemove(input: string): string[] {
   return input
