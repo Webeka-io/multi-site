@@ -53,7 +53,7 @@ export default function Page() {
     position: "fixed",
     top: 0,
     bottom: 0,
-    width: "45%",
+    width: 0,
     zIndex: 10000,
     background: "transparent",
     pointerEvents: "none"
