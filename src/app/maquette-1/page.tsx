@@ -52,7 +52,7 @@ export default function Page() {
   const gutterBase: React.CSSProperties = {
     position: "fixed",
     top: 0,
-    bottom: "5vh",
+    bottom: 0,
     width: "45%",
     zIndex: 10000,
     background: "transparent",
