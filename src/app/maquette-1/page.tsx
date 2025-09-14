@@ -1,29 +1,53 @@
 // app/portavia/page.tsx
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 const TARGET = "https://genial-cogwheel-567577.framer.app/";
 
 function parseRemove(input: string): string[] {
   return input
-    .split(/[,;\n]/)        // virgules, points-virgules ou sauts de ligne
+    .split(/[,;\n]/)
     .map((s) => s.trim())
     .filter(Boolean)
-    .slice(0, 50);          // petite limite de sécurité
+    .slice(0, 50);
 }
 
 export default function Page() {
-  // Chemin interne du site proxifié
   const [path, setPath] = useState<string>("/");
-
-  // Options
   const [disableJs, setDisableJs] = useState<boolean>(false);
-
-  // Sélecteurs à supprimer (le badge Framer est déjà géré côté proxy, on le laisse ici pour le montrer)
   const [removeInput, setRemoveInput] = useState<string>(
-    ".__framer-badge-container, #__framer-badge-container, .framer-1fin31n-container, #framer-1fin31n-container,.framer-rcd755-container,#framer-rcd755-container,"
+    ".__framer-badge-container, #__framer-badge-container, .framer-1fin31n-container, #framer-1fin31n-container, .framer-rcd755-container, #framer-rcd755-container,"
   );
+
+  // Hauteur réelle du viewport visuel (corrige 100vh sur mobile)
+  const [vh, setVh] = useState<number | null>(null);
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+
+  useEffect(() => {
+    const updateVh = () => {
+      // visualViewport est le plus fiable sur mobile (barre d'adresse dynamique)
+      const vv = (window as any).visualViewport;
+      const height = vv?.height ?? window.innerHeight;
+      setVh(Math.round(height));
+    };
+
+    updateVh();
+    const vv = (window as any).visualViewport;
+    if (vv) {
+      vv.addEventListener("resize", updateVh);
+      vv.addEventListener("scroll", updateVh); // la barre peut bouger au scroll
+    }
+    window.addEventListener("resize", updateVh);
+
+    return () => {
+      if (vv) {
+        vv.removeEventListener("resize", updateVh);
+        vv.removeEventListener("scroll", updateVh);
+      }
+      window.removeEventListener("resize", updateVh);
+    };
+  }, []);
 
   const proxySrc = useMemo(() => {
     const absolute = new URL(path || "/", TARGET).toString();
@@ -33,20 +57,22 @@ export default function Page() {
     return `/api/proxy?${params.toString()}`;
   }, [path, disableJs, removeInput]);
 
-  // Styles inline (TS-friendly)
+  // Styles : utilise dvh/svh et retombe sur la hauteur mesurée
   const wrapStyle: React.CSSProperties = {
     position: "relative",
-    height: "100vh",
-    overflow: "hidden"
+    // dvh/svh règlent la marge fantôme sur mobile modernes ; la hauteur mesurée (vh) sert de fallback solide
+    height: vh ? `${vh}px` : "100dvh",
+    minHeight: vh ? `${vh}px` : "100svh",
+    overflow: "hidden",
+    WebkitOverflowScrolling: "touch",
   };
 
   const iframeStyle: React.CSSProperties = {
     position: "absolute",
-    top: 0,
-    left: 0,
+    inset: 0, // top:0, right:0, bottom:0, left:0
     width: "100%",
     height: "100%",
-    border: "0"
+    border: "0",
   };
 
   const gutterBase: React.CSSProperties = {
@@ -56,23 +82,34 @@ export default function Page() {
     width: 0,
     zIndex: 10000,
     background: "transparent",
-    pointerEvents: "none"
+    pointerEvents: "none",
   };
-
   const gutterLeft: React.CSSProperties = { ...gutterBase, left: 0 };
   const gutterRight: React.CSSProperties = { ...gutterBase, right: 0 };
 
   return (
     <>
-      {/* Reset global pour cette page */}
+      {/* Reset global allégé : ne bloque plus le scroll système
+          et corrige Safari iOS avec -webkit-fill-available */}
       <style jsx global>{`
         html,
-        body {
+        body,
+        #__next {
           margin: 0;
+          padding: 0;
           height: 100%;
-          overflow: hidden; /* pas de scroll externe */
+        }
+        html {
+          height: -webkit-fill-available;
+        }
+        body {
+          min-height: 100svh;
+          overscroll-behavior-y: none;
           font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
             Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji;
+          /* NE PAS forcer overflow:hidden global, ça casse les viewports mobiles */
+          overflow: hidden;
+          background: #0000; /* transparent */
         }
       `}</style>
 
@@ -104,14 +141,15 @@ export default function Page() {
 
       <div style={wrapStyle}>
         <iframe
+          ref={iframeRef}
           key={proxySrc}
           src={proxySrc}
           style={iframeStyle}
+          // Important : laisser le scroll à l’intérieur de l’iframe
           sandbox="allow-scripts allow-same-origin"
           referrerPolicy="no-referrer-when-downgrade"
         />
-
-        {/* Gouttières latérales */}
+        {/* Gouttières latérales (aucun impact vertical) */}
         <div style={gutterLeft} />
         <div style={gutterRight} />
       </div>
