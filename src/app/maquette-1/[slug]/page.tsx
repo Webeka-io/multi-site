@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
 
 const TARGET = "https://genial-cogwheel-567577.framer.app/";
+const ROUTE_SEGMENT = "maquette-1"; // nom de ta route
 
 function parseRemove(input: string): string[] {
   return input
@@ -13,79 +13,110 @@ function parseRemove(input: string): string[] {
     .slice(0, 50);
 }
 
-function clean(val: string | undefined) {
-  if (!val) return "";
-  return decodeURIComponent(val).trim().slice(0, 128).replace(/[<>"]/g, "");
+function clean(v?: string | null) {
+  if (!v) return "";
+  return decodeURIComponent(v).trim().slice(0, 128).replace(/[<>"]/g, "");
 }
 
-/**
- * Supporte :
- *  - /maquette-1/Entreprise/Ville/Tel/Email
- *  - /maquette-1/Entreprise-Ville-Tel-Email
- *  - /maquette-1/Entreprise
- */
-function useSlugFields() {
-  const pathname = usePathname() || "/";
-  const parts = pathname.split("/").filter(Boolean);
-  const last = parts[parts.length - 1] || "";
+/** Extrait {basePath, ent, city, phone, email} depuis pathname/query/hash */
+function readUrlValues(): {
+  basePath: string; // ex: "/maquette-1" ou "/fr/maquette-1" ou "/app/fr/maquette-1"
+  ent: string; city: string; phone: string; email: string;
+  shouldClean: boolean; // faut-il nettoyer l’URL ?
+} {
+  if (typeof window === "undefined") {
+    return { basePath: `/${ROUTE_SEGMENT}`, ent: "", city: "", phone: "", email: "", shouldClean: false };
+  }
+
+  const url = new URL(window.location.href);
+  const pathname = url.pathname;
+
+  // 1) Trouver la **vraie base** jusqu’au segment "maquette-1" (gère locale/basePath)
+  const parts = pathname.split("/").filter(Boolean); // ex: ["fr","maquette-1","Dentia","Paris",...]
+  const idx = parts.indexOf(ROUTE_SEGMENT);
+  const basePath = idx >= 0 ? "/" + parts.slice(0, idx + 1).join("/") : "/" + ROUTE_SEGMENT;
 
   let ent = "", city = "", phone = "", email = "";
+  let shouldClean = false;
 
-  if (last.includes("-")) {
-    // Format compact
-    const t = last.split("-").map(clean);
-    [ent, city, phone, email] = [t[0] || "", t[1] || "", t[2] || "", t[3] || ""];
-  } else {
-    // Format 4 segments
-    const tail = parts.slice(-4).map(clean);
-    if (tail.length === 4) {
-      [ent, city, phone, email] = tail;
-    } else if (tail.length >= 1) {
-      ent = clean(last);
+  // 2) LIRE depuis les **segments** après "maquette-1"
+  const tail = idx >= 0 ? parts.slice(idx + 1) : [];
+  if (tail.length > 0) {
+    const last = tail[tail.length - 1];
+    if (last.includes("-")) {
+      const t = last.split("-").map(clean);
+      [ent, city, phone, email] = [t[0] || "", t[1] || "", t[2] || "", t[3] || ""];
+    } else {
+      const t = tail.map(clean);
+      [ent, city, phone, email] = [t[0] || "", t[1] || "", t[2] || "", t[3] || ""];
+    }
+    shouldClean = true; // on a utilisé des segments → on les masquera
+  }
+
+  // 3) LIRE depuis **query compacte** ?v=Entreprise|Ville|Tel|Email
+  const v = url.searchParams.get("v");
+  if (v) {
+    const t = v.split("|").map(clean);
+    ent = t[0] || ent;
+    city = t[1] || city;
+    phone = t[2] || phone;
+    email = t[3] || email;
+    shouldClean = true;
+  }
+
+  // 4) LIRE depuis **query claire**
+  const cq = {
+    company: clean(url.searchParams.get("company")),
+    city: clean(url.searchParams.get("city")),
+    phone: clean(url.searchParams.get("phone")),
+    email: clean(url.searchParams.get("email")),
+  };
+  if (cq.company || cq.city || cq.phone || cq.email) {
+    ent = cq.company || ent;
+    city = cq.city || city;
+    phone = cq.phone || phone;
+    email = cq.email || email;
+    shouldClean = true;
+  }
+
+  // 5) LIRE depuis **hash** (optionnel)
+  if (!ent) {
+    const raw = window.location.hash || "";
+    const hash = raw.startsWith("#") ? raw.slice(1) : raw;
+    if (hash) {
+      const h = hash.split("/").map(clean);
+      ent = h[0] || ent;
+      city = h[1] || city;
+      phone = h[2] || phone;
+      email = h[3] || email;
+      shouldClean = true;
     }
   }
-  return { ent, city, phone, email };
+
+  return { basePath, ent, city, phone, email, shouldClean };
 }
 
 export default function Page() {
-  const { ent, city, phone, email } = useSlugFields();
+  // Valeurs lues + URL nettoyée une seule fois au montage
+  const [{ ent, city, phone, email }, setVals] = useState({ ent: "", city: "", phone: "", email: "" });
 
-  // ✨ Overrides issus du hash (prioritaires si présents)
-  const [ovr, setOvr] = useState({ ent: "", city: "", phone: "", email: "" });
-
-  // Lis #Entreprise/Ville/Tel/Email puis nettoie l’URL (supprime le hash)
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const raw = window.location.hash || "";
-    const hash = raw.startsWith("#") ? raw.slice(1) : raw;
-    if (!hash) return;
+    const { basePath, ent, city, phone, email, shouldClean } = readUrlValues();
+    setVals({ ent, city, phone, email });
 
-    const parts = hash.split("/").map(clean);
-    const next = {
-      ent: parts[0] || "",
-      city: parts[1] || "",
-      phone: parts[2] || "",
-      email: parts[3] || "",
-    };
-    setOvr(next);
-
-    // Nettoie la barre d'adresse (garde le chemin actuel, retire juste le hash)
-    try {
-      const cleanUrl = window.location.pathname + window.location.search;
-      window.history.replaceState(null, "", cleanUrl);
-    } catch {}
+    if (shouldClean) {
+      // ⚠️ On ne change **que** l’URL affichée, pas de navigation.
+      try {
+        // Conserve exactement la base détectée (locale/basePath compris)
+        window.history.replaceState(null, "", basePath);
+      } catch {}
+    }
   }, []);
 
-  // Valeurs finales envoyées au proxy (hash > slug)
-  const ENT = ovr.ent || ent;
-  const CITY = ovr.city || city;
-  const PHONE = ovr.phone || phone;
-  const EMAIL = ovr.email || email;
-
-  // iFrame / options (inchangé)
-  const [path, setPath] = useState<string>("/");
-  const [disableJs, setDisableJs] = useState<boolean>(false);
-  const [removeInput, setRemoveInput] = useState<string>(
+  // iFrame/options (inchangé)
+  const [path] = useState<string>("/");
+  const [disableJs] = useState<boolean>(false);
+  const [removeInput] = useState<string>(
     ".__framer-badge-container, #__framer-badge-container"
   );
 
@@ -118,15 +149,15 @@ export default function Page() {
     const absolute = new URL(path || "/", TARGET).toString();
     const params = new URLSearchParams({ url: absolute });
 
-    if (ENT) params.set("company", ENT);
-    if (CITY) params.set("city", CITY);
-    if (PHONE) params.set("phone", PHONE);
-    if (EMAIL) params.set("email", EMAIL);
+    if (ent) params.set("company", ent);
+    if (city) params.set("city", city);
+    if (phone) params.set("phone", phone);
+    if (email) params.set("email", email);
 
     if (disableJs) params.set("disableJs", "1");
     for (const sel of parseRemove(removeInput)) params.append("remove", sel);
     return `/api/proxy?${params.toString()}`;
-  }, [path, disableJs, removeInput, ENT, CITY, PHONE, EMAIL]);
+  }, [path, disableJs, removeInput, ent, city, phone, email]);
 
   const wrapStyle: React.CSSProperties = {
     position: "relative",
