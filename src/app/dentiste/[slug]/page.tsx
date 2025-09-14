@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 const TARGET = "https://genial-cogwheel-567577.framer.app/";
-const ROUTE_SEGMENT = "dentiste"; // nom de ta route
+const ROUTE_SEGMENT = "dentiste"; // le segment à nettoyer de l'URL
 
 function parseRemove(input: string): string[] {
   return input
@@ -18,42 +18,43 @@ function clean(v?: string | null) {
   return decodeURIComponent(v).trim().slice(0, 128).replace(/[<>"]/g, "");
 }
 
-/** Extrait {basePath, ent, city, phone, email} depuis pathname/query/hash */
+/** Décode segments/queries/hash + calcule la racine AVANT "maquette-1" pour nettoyer l'URL */
 function readUrlValues(): {
-  basePath: string; // ex: "/maquette-1" ou "/fr/maquette-1" ou "/app/fr/maquette-1"
+  rootPath: string; // ex: "/fr" si "/fr/maquette-1/...", sinon "/"
   ent: string; city: string; phone: string; email: string;
-  shouldClean: boolean; // faut-il nettoyer l’URL ?
+  shouldClean: boolean;
 } {
   if (typeof window === "undefined") {
-    return { basePath: `/${ROUTE_SEGMENT}`, ent: "", city: "", phone: "", email: "", shouldClean: false };
+    return { rootPath: "/", ent: "", city: "", phone: "", email: "", shouldClean: false };
   }
 
   const url = new URL(window.location.href);
-  const pathname = url.pathname;
-
-  // 1) Trouver la **vraie base** jusqu’au segment "maquette-1" (gère locale/basePath)
-  const parts = pathname.split("/").filter(Boolean); // ex: ["fr","maquette-1","Dentia","Paris",...]
+  const parts = url.pathname.split("/").filter(Boolean); // ["fr","maquette-1","Dentia",...]
   const idx = parts.indexOf(ROUTE_SEGMENT);
-  const basePath = idx >= 0 ? "/" + parts.slice(0, idx + 1).join("/") : "/" + ROUTE_SEGMENT;
+
+  // racine = tout ce qui est avant "maquette-1" (ou "/" s'il n'y a rien)
+  const rootPath = idx > 0 ? "/" + parts.slice(0, idx).join("/") : "/";
 
   let ent = "", city = "", phone = "", email = "";
   let shouldClean = false;
 
-  // 2) LIRE depuis les **segments** après "maquette-1"
-  const tail = idx >= 0 ? parts.slice(idx + 1) : [];
-  if (tail.length > 0) {
-    const last = tail[tail.length - 1];
-    if (last.includes("-")) {
-      const t = last.split("-").map(clean);
-      [ent, city, phone, email] = [t[0] || "", t[1] || "", t[2] || "", t[3] || ""];
-    } else {
-      const t = tail.map(clean);
-      [ent, city, phone, email] = [t[0] || "", t[1] || "", t[2] || "", t[3] || ""];
+  // 1) Segments après "maquette-1"
+  if (idx >= 0) {
+    const tail = parts.slice(idx + 1);
+    if (tail.length > 0) {
+      const last = tail[tail.length - 1];
+      if (last.includes("-")) {
+        const t = last.split("-").map(clean);
+        [ent, city, phone, email] = [t[0] || "", t[1] || "", t[2] || "", t[3] || ""];
+      } else {
+        const t = tail.map(clean);
+        [ent, city, phone, email] = [t[0] || "", t[1] || "", t[2] || "", t[3] || ""];
+      }
+      shouldClean = true;
     }
-    shouldClean = true; // on a utilisé des segments → on les masquera
   }
 
-  // 3) LIRE depuis **query compacte** ?v=Entreprise|Ville|Tel|Email
+  // 2) Query compacte ?v=Entreprise|Ville|Tel|Email
   const v = url.searchParams.get("v");
   if (v) {
     const t = v.split("|").map(clean);
@@ -64,7 +65,7 @@ function readUrlValues(): {
     shouldClean = true;
   }
 
-  // 4) LIRE depuis **query claire**
+  // 3) Query claire ?company=&city=&phone=&email=
   const cq = {
     company: clean(url.searchParams.get("company")),
     city: clean(url.searchParams.get("city")),
@@ -79,7 +80,7 @@ function readUrlValues(): {
     shouldClean = true;
   }
 
-  // 5) LIRE depuis **hash** (optionnel)
+  // 4) Hash #Entreprise/Ville/Tel/Email (si rien trouvé avant)
   if (!ent) {
     const raw = window.location.hash || "";
     const hash = raw.startsWith("#") ? raw.slice(1) : raw;
@@ -93,27 +94,26 @@ function readUrlValues(): {
     }
   }
 
-  return { basePath, ent, city, phone, email, shouldClean };
+  return { rootPath, ent, city, phone, email, shouldClean };
 }
 
 export default function Page() {
-  // Valeurs lues + URL nettoyée une seule fois au montage
   const [{ ent, city, phone, email }, setVals] = useState({ ent: "", city: "", phone: "", email: "" });
 
+  // Lecture + nettoyage (on enlève aussi /maquette-1)
   useEffect(() => {
-    const { basePath, ent, city, phone, email, shouldClean } = readUrlValues();
+    const { rootPath, ent, city, phone, email, shouldClean } = readUrlValues();
     setVals({ ent, city, phone, email });
 
     if (shouldClean) {
-      // ⚠️ On ne change **que** l’URL affichée, pas de navigation.
       try {
-        // Conserve exactement la base détectée (locale/basePath compris)
-        window.history.replaceState(null, "", basePath);
+        // Remplace l'URL visible par la racine avant "maquette-1" (ex: "/" ou "/fr")
+        window.history.replaceState(null, "", rootPath || "/");
       } catch {}
     }
   }, []);
 
-  // iFrame/options (inchangé)
+  // iFrame / options (identique)
   const [path] = useState<string>("/");
   const [disableJs] = useState<boolean>(false);
   const [removeInput] = useState<string>(
