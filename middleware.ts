@@ -19,6 +19,12 @@ export function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
+  // 0.1) On ne s'occupe que des navigations "document" (évite les fetch/XHR, images…)
+  const dest = req.headers.get("sec-fetch-dest") || "";
+  if (dest && dest !== "document") {
+    return NextResponse.next();
+  }
+
   // 1) Local / preview Vercel : pas de logique spéciale
   const isLocal = host.includes("localhost");
   const isPreview = host.endsWith(".vercel.app");
@@ -31,6 +37,24 @@ export function middleware(req: NextRequest) {
       return NextResponse.redirect(EXTERNAL_DEST_ORIGIN, 308);
     }
     return NextResponse.next();
+  }
+
+  // 2.5) Filet de sécurité "sortie du proxy" (anti-404 Webflow/SPA)
+  // - On ne touche pas /api/proxy (déjà dans le proxy)
+  // - Si le proxy a posé les cookies, on reconstruit l'URL upstream et on redirige vers /api/proxy
+  if (!pathname.startsWith("/api/proxy")) {
+    const originCookie = req.cookies.get("proxy_origin")?.value || "";
+    const paramsCookie = req.cookies.get("proxy_params")?.value || ""; // déjà k=v&k2=v2 encodé
+    if (originCookie) {
+      const upstreamUrl = `${decodeURIComponent(originCookie)}${pathname}${search || ""}`;
+      const sp = new URLSearchParams();
+      sp.set("url", upstreamUrl);
+      // Concatène les params d'origine si présents
+      const redirect = new URL(req.url);
+      redirect.pathname = "/api/proxy";
+      redirect.search = `?${sp.toString()}${paramsCookie ? `&${paramsCookie}` : ""}`;
+      return NextResponse.redirect(redirect, 302);
+    }
   }
 
   // 3) Multi-tenant par domaine quand il y en a un
