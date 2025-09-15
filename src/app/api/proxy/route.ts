@@ -51,8 +51,8 @@ function rewriteTargetsSSR(html: string): string {
   return html
     .replace(/\btarget=(['"])_top\1/gi, 'target="_self"')
     .replace(/\btarget=(['"])_parent\1/gi, 'target="_self"')
-    .replace(/\btarget=_top\b/gi, 'target=_self')
-    .replace(/\btarget=_parent\b/gi, 'target=_self');
+    .replace(/\btarget=_top\b/gi, 'target="_self"')
+    .replace(/\btarget=_parent\b/gi, 'target="_self"');
 }
 
 // —— Rebuild /api/proxy URL with all original params (propagation)
@@ -108,6 +108,7 @@ export async function GET(req: NextRequest) {
   const removeList = parseRemove(sp);
 
   const company = sanitize(sp.get("company"));
+  const sector  = sanitize(sp.get("sector"));            // 👈 NOUVEAU
   const city    = sanitize(sp.get("city"));
   const phone   = sanitize(sp.get("phone"));
   const email   = sanitize(sp.get("email"));
@@ -147,6 +148,7 @@ export async function GET(req: NextRequest) {
   // 1) Inject <base target="_self"> + CSS hide + ***EARLY PATCH SCRIPT*** just after <head>
   const mapBraced: Record<string, string> = {};
   if (company) mapBraced["Entreprise"] = company;
+  if (sector)  mapBraced["Secteur"]    = sector;        // 👈 NOUVEAU
   if (city)    mapBraced["Ville"]      = city;
   if (phone) { mapBraced["Tél"] = phone; mapBraced["Tel"] = phone; mapBraced["Téléphone"] = phone; }
   if (email) { mapBraced["Email"] = email; mapBraced["E-mail"] = email; }
@@ -178,7 +180,7 @@ export async function GET(req: NextRequest) {
     '}catch(e){}' +
     // 3) safety: MutationObserver + Shadow DOM ouverts
     'function walk(n){if(!n)return; if(n.nodeType===3){var v=n.nodeValue||"";var nv=applyText(v); if(nv!==v)n.nodeValue=nv; return;} if(n.nodeType===1){if(n.shadowRoot) walk(n.shadowRoot);} var c=n.childNodes; for(var i=0;i<c.length;i++) walk(c[i]);}' +
-    'function run(){walk(document.documentElement); if(document.title){document.title=applyText(document.title);}}' +
+    'function run(){walk(document.documentElement); if(document.title){document.title=applyText(document.title);}}' + // 👈 le Titre est aussi remplacé
     'if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",run);} else {run();}' +
     'new MutationObserver(function(ms){for(var i=0;i<ms.length;i++){var m=ms[i]; if(m.addedNodes){for(var j=0;j<m.addedNodes.length;j++){walk(m.addedNodes[j]);}} if(m.type==="characterData"){walk(m.target);}}}).observe(document.documentElement,{childList:true,subtree:true,characterData:true});' +
     // 4) Historique SPA (Framer)
