@@ -2,8 +2,8 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
-const TARGET = "https://welcome-pitch-778087.framer.app/";
-const ROUTE_SEGMENT = "dentiste"; // le segment à nettoyer de l'URL
+const TARGET = "https://secured-principles-292763.framer.app/";
+const ROUTE_SEGMENT = "veto"; // le segment à nettoyer de l'URL
 
 function parseRemove(input: string): string[] {
   return input

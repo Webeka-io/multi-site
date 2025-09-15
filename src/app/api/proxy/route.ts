@@ -9,8 +9,8 @@ const ALLOWLIST = [
   "secured-principles-292763.framer.app",
   "generous-tools-627083.framer.app",
   "daring-remember-772934.framer.app",
-  "beminee.webflow.io",
   "drivora-wcopilot.webflow.io",
+  "welcome-pitch-778087.framer.app",
 ];
 
 function isAllowedHost(hostname: string) {
