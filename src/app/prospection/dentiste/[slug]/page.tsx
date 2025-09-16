@@ -1,10 +1,11 @@
-// app/portavia/page.tsx
+
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
-const TARGET = "https://welcome-pitch-778087.framer.app/";
-const ROUTE_SEGMENT = "dentiste"; // le segment à nettoyer de l'URL
+const TARGET = "https://genial-cogwheel-567577.framer.app/";
+// Segments d'URL à retirer du slug et de l'URL affichée
+const STRIP_SEGMENTS = ["prospection", "dentiste"];
 
 function parseRemove(input: string): string[] {
   return input
@@ -19,9 +20,9 @@ function clean(v?: string | null) {
   return decodeURIComponent(v).trim().slice(0, 128).replace(/[<>"]/g, "");
 }
 
-/** Décode segments/queries/hash + calcule la racine AVANT ROUTE_SEGMENT pour nettoyer l'URL */
+/** Décode segments/queries/hash + calcule la racine AVANT les STRIP_SEGMENTS pour nettoyer l'URL */
 function readUrlValues(): {
-  rootPath: string; // ex: "/fr" si "/fr/dentiste/...", sinon "/"
+  rootPath: string; // ex: "/fr" si "/fr/prospection/dentiste/...", sinon "/"
   ent: string; sector: string; city: string; phone: string; email: string;
   shouldClean: boolean;
 } {
@@ -30,31 +31,43 @@ function readUrlValues(): {
   }
 
   const url = new URL(window.location.href);
-  const parts = url.pathname.split("/").filter(Boolean); // ["fr","dentiste","Dentia",...]
-  const idx = parts.indexOf(ROUTE_SEGMENT);
+  const parts = url.pathname.split("/").filter(Boolean); // ["fr","prospection","dentiste","Dentia",...]
 
-  // racine = tout ce qui est avant ROUTE_SEGMENT (ou "/" s'il n'y a rien)
-  const rootPath = idx > 0 ? "/" + parts.slice(0, idx).join("/") : "/";
+  // Cherche le premier index où apparaît l’un des segments à retirer
+  let firstIdx = -1;
+  for (let i = 0; i < parts.length; i++) {
+    if (STRIP_SEGMENTS.includes(parts[i].toLowerCase())) {
+      firstIdx = i;
+      break;
+    }
+  }
+
+  // Racine = tout ce qui est avant le premier segment à retirer (ou "/" s'il n'y a rien)
+  const rootPath = firstIdx > 0 ? "/" + parts.slice(0, firstIdx).join("/") : "/";
+
+  // Calcule la "queue" après avoir sauté tous les segments à retirer consécutifs
+  let tailStart = firstIdx >= 0 ? firstIdx : parts.length;
+  while (tailStart < parts.length && STRIP_SEGMENTS.includes(parts[tailStart]?.toLowerCase())) {
+    tailStart++;
+  }
+  const tail = parts.slice(tailStart);
 
   let ent = "", sector = "", city = "", phone = "", email = "";
   let shouldClean = false;
 
-  // 1) Segments après ROUTE_SEGMENT
-  if (idx >= 0) {
-    const tail = parts.slice(idx + 1);
-    if (tail.length > 0) {
-      const last = tail[tail.length - 1];
-      if (last.includes("-")) {
-        // Format compact : Entreprise-Secteur-Ville-Tel-Email
-        const t = last.split("-").map(clean);
-        [ent, sector, city, phone, email] = [t[0] || "", t[1] || "", t[2] || "", t[3] || "", t[4] || ""];
-      } else {
-        // Format segments : /Entreprise/Secteur/Ville/Tel/Email
-        const t = tail.map(clean);
-        [ent, sector, city, phone, email] = [t[0] || "", t[1] || "", t[2] || "", t[3] || "", t[4] || ""];
-      }
-      shouldClean = true;
+  // 1) Segments après STRIP_SEGMENTS
+  if (firstIdx >= 0 && tail.length > 0) {
+    const last = tail[tail.length - 1];
+    if (last.includes("-")) {
+      // Format compact : Entreprise-Secteur-Ville-Tel-Email
+      const t = last.split("-").map(clean);
+      [ent, sector, city, phone, email] = [t[0] || "", t[1] || "", t[2] || "", t[3] || "", t[4] || ""];
+    } else {
+      // Format segments : /Entreprise/Secteur/Ville/Tel/Email
+      const t = tail.map(clean);
+      [ent, sector, city, phone, email] = [t[0] || "", t[1] || "", t[2] || "", t[3] || "", t[4] || ""];
     }
+    shouldClean = true;
   }
 
   // 2) Query compacte ?v=Entreprise|Secteur|Ville|Tel|Email
@@ -109,14 +122,14 @@ export default function Page() {
     ent: "", sector: "", city: "", phone: "", email: ""
   });
 
-  // Lecture + nettoyage (on enlève aussi /dentiste)
+  // Lecture + nettoyage (on enlève aussi /prospection et /dentiste)
   useEffect(() => {
     const { rootPath, ent, sector, city, phone, email, shouldClean } = readUrlValues();
     setVals({ ent, sector, city, phone, email });
 
     if (shouldClean) {
       try {
-        // Remplace l'URL visible par la racine avant ROUTE_SEGMENT (ex: "/" ou "/fr")
+        // Remplace l'URL visible par la racine avant les segments retirés (ex: "/" ou "/fr")
         window.history.replaceState(null, "", rootPath || "/");
       } catch {}
     }
@@ -159,7 +172,7 @@ export default function Page() {
     const params = new URLSearchParams({ url: absolute });
 
     if (ent)    params.set("company", ent);
-    if (sector) params.set("sector", sector);   // 👈 NOUVEAU
+    if (sector) params.set("sector", sector);
     if (city)   params.set("city", city);
     if (phone)  params.set("phone", phone);
     if (email)  params.set("email", email);

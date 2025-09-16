@@ -1,9 +1,11 @@
+
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 const TARGET = "https://secured-principles-292763.framer.app/";
-const ROUTE_SEGMENT = "veto"; // le segment à nettoyer de l'URL
+// Segments d'URL à retirer du slug et de l'URL affichée
+const STRIP_SEGMENTS = ["prospection", "veterinaire"];
 
 function parseRemove(input: string): string[] {
   return input
@@ -18,96 +20,116 @@ function clean(v?: string | null) {
   return decodeURIComponent(v).trim().slice(0, 128).replace(/[<>"]/g, "");
 }
 
-/** Décode segments/queries/hash + calcule la racine AVANT "maquette-1" pour nettoyer l'URL */
+/** Décode segments/queries/hash + calcule la racine AVANT les STRIP_SEGMENTS pour nettoyer l'URL */
 function readUrlValues(): {
-  rootPath: string; // ex: "/fr" si "/fr/maquette-1/...", sinon "/"
-  ent: string; city: string; phone: string; email: string;
+  rootPath: string; // ex: "/fr" si "/fr/prospection/dentiste/...", sinon "/"
+  ent: string; sector: string; city: string; phone: string; email: string;
   shouldClean: boolean;
 } {
   if (typeof window === "undefined") {
-    return { rootPath: "/", ent: "", city: "", phone: "", email: "", shouldClean: false };
+    return { rootPath: "/", ent: "", sector: "", city: "", phone: "", email: "", shouldClean: false };
   }
 
   const url = new URL(window.location.href);
-  const parts = url.pathname.split("/").filter(Boolean); // ["fr","maquette-1","Dentia",...]
-  const idx = parts.indexOf(ROUTE_SEGMENT);
+  const parts = url.pathname.split("/").filter(Boolean); // ["fr","prospection","dentiste","Dentia",...]
 
-  // racine = tout ce qui est avant "maquette-1" (ou "/" s'il n'y a rien)
-  const rootPath = idx > 0 ? "/" + parts.slice(0, idx).join("/") : "/";
-
-  let ent = "", city = "", phone = "", email = "";
-  let shouldClean = false;
-
-  // 1) Segments après "maquette-1"
-  if (idx >= 0) {
-    const tail = parts.slice(idx + 1);
-    if (tail.length > 0) {
-      const last = tail[tail.length - 1];
-      if (last.includes("-")) {
-        const t = last.split("-").map(clean);
-        [ent, city, phone, email] = [t[0] || "", t[1] || "", t[2] || "", t[3] || ""];
-      } else {
-        const t = tail.map(clean);
-        [ent, city, phone, email] = [t[0] || "", t[1] || "", t[2] || "", t[3] || ""];
-      }
-      shouldClean = true;
+  // Cherche le premier index où apparaît l’un des segments à retirer
+  let firstIdx = -1;
+  for (let i = 0; i < parts.length; i++) {
+    if (STRIP_SEGMENTS.includes(parts[i].toLowerCase())) {
+      firstIdx = i;
+      break;
     }
   }
 
-  // 2) Query compacte ?v=Entreprise|Ville|Tel|Email
+  // Racine = tout ce qui est avant le premier segment à retirer (ou "/" s'il n'y a rien)
+  const rootPath = firstIdx > 0 ? "/" + parts.slice(0, firstIdx).join("/") : "/";
+
+  // Calcule la "queue" après avoir sauté tous les segments à retirer consécutifs
+  let tailStart = firstIdx >= 0 ? firstIdx : parts.length;
+  while (tailStart < parts.length && STRIP_SEGMENTS.includes(parts[tailStart]?.toLowerCase())) {
+    tailStart++;
+  }
+  const tail = parts.slice(tailStart);
+
+  let ent = "", sector = "", city = "", phone = "", email = "";
+  let shouldClean = false;
+
+  // 1) Segments après STRIP_SEGMENTS
+  if (firstIdx >= 0 && tail.length > 0) {
+    const last = tail[tail.length - 1];
+    if (last.includes("-")) {
+      // Format compact : Entreprise-Secteur-Ville-Tel-Email
+      const t = last.split("-").map(clean);
+      [ent, sector, city, phone, email] = [t[0] || "", t[1] || "", t[2] || "", t[3] || "", t[4] || ""];
+    } else {
+      // Format segments : /Entreprise/Secteur/Ville/Tel/Email
+      const t = tail.map(clean);
+      [ent, sector, city, phone, email] = [t[0] || "", t[1] || "", t[2] || "", t[3] || "", t[4] || ""];
+    }
+    shouldClean = true;
+  }
+
+  // 2) Query compacte ?v=Entreprise|Secteur|Ville|Tel|Email
   const v = url.searchParams.get("v");
   if (v) {
     const t = v.split("|").map(clean);
-    ent = t[0] || ent;
-    city = t[1] || city;
-    phone = t[2] || phone;
-    email = t[3] || email;
+    ent   = t[0] || ent;
+    sector= t[1] || sector;
+    city  = t[2] || city;
+    phone = t[3] || phone;
+    email = t[4] || email;
     shouldClean = true;
   }
 
-  // 3) Query claire ?company=&city=&phone=&email=
+  // 3) Query claire ?company=&sector=&city=&phone=&email=
   const cq = {
     company: clean(url.searchParams.get("company")),
-    city: clean(url.searchParams.get("city")),
-    phone: clean(url.searchParams.get("phone")),
-    email: clean(url.searchParams.get("email")),
+    sector:  clean(url.searchParams.get("sector")),
+    city:    clean(url.searchParams.get("city")),
+    phone:   clean(url.searchParams.get("phone")),
+    email:   clean(url.searchParams.get("email")),
   };
-  if (cq.company || cq.city || cq.phone || cq.email) {
-    ent = cq.company || ent;
-    city = cq.city || city;
-    phone = cq.phone || phone;
-    email = cq.email || email;
+  if (cq.company || cq.sector || cq.city || cq.phone || cq.email) {
+    ent   = cq.company || ent;
+    sector= cq.sector  || sector;
+    city  = cq.city    || city;
+    phone = cq.phone   || phone;
+    email = cq.email   || email;
     shouldClean = true;
   }
 
-  // 4) Hash #Entreprise/Ville/Tel/Email (si rien trouvé avant)
+  // 4) Hash #Entreprise/Secteur/Ville/Tel/Email (si rien trouvé avant)
   if (!ent) {
     const raw = window.location.hash || "";
     const hash = raw.startsWith("#") ? raw.slice(1) : raw;
     if (hash) {
       const h = hash.split("/").map(clean);
-      ent = h[0] || ent;
-      city = h[1] || city;
-      phone = h[2] || phone;
-      email = h[3] || email;
+      ent    = h[0] || ent;
+      sector = h[1] || sector;
+      city   = h[2] || city;
+      phone  = h[3] || phone;
+      email  = h[4] || email;
       shouldClean = true;
     }
   }
 
-  return { rootPath, ent, city, phone, email, shouldClean };
+  return { rootPath, ent, sector, city, phone, email, shouldClean };
 }
 
 export default function Page() {
-  const [{ ent, city, phone, email }, setVals] = useState({ ent: "", city: "", phone: "", email: "" });
+  const [{ ent, sector, city, phone, email }, setVals] = useState({
+    ent: "", sector: "", city: "", phone: "", email: ""
+  });
 
-  // Lecture + nettoyage (on enlève aussi /maquette-1)
+  // Lecture + nettoyage (on enlève aussi /prospection et /dentiste)
   useEffect(() => {
-    const { rootPath, ent, city, phone, email, shouldClean } = readUrlValues();
-    setVals({ ent, city, phone, email });
+    const { rootPath, ent, sector, city, phone, email, shouldClean } = readUrlValues();
+    setVals({ ent, sector, city, phone, email });
 
     if (shouldClean) {
       try {
-        // Remplace l'URL visible par la racine avant "maquette-1" (ex: "/" ou "/fr")
+        // Remplace l'URL visible par la racine avant les segments retirés (ex: "/" ou "/fr")
         window.history.replaceState(null, "", rootPath || "/");
       } catch {}
     }
@@ -149,15 +171,16 @@ export default function Page() {
     const absolute = new URL(path || "/", TARGET).toString();
     const params = new URLSearchParams({ url: absolute });
 
-    if (ent) params.set("company", ent);
-    if (city) params.set("city", city);
-    if (phone) params.set("phone", phone);
-    if (email) params.set("email", email);
+    if (ent)    params.set("company", ent);
+    if (sector) params.set("sector", sector);
+    if (city)   params.set("city", city);
+    if (phone)  params.set("phone", phone);
+    if (email)  params.set("email", email);
 
     if (disableJs) params.set("disableJs", "1");
     for (const sel of parseRemove(removeInput)) params.append("remove", sel);
     return `/api/proxy?${params.toString()}`;
-  }, [path, disableJs, removeInput, ent, city, phone, email]);
+  }, [path, disableJs, removeInput, ent, sector, city, phone, email]);
 
   const wrapStyle: React.CSSProperties = {
     position: "relative",
