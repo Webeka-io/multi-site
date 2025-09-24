@@ -1,11 +1,14 @@
-
+// app/prospection/portavia/page.tsx
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
-const TARGET = "https://genial-cogwheel-567577.framer.app/";
-// Segments d'URL à retirer du slug et de l'URL affichée
-const STRIP_SEGMENTS = ["prospection", "dentiste"];
+// ⚠️ On pointe directement sur /fr et on préservera ce préfixe
+const TARGET = "https://moccasin-gift-930162.framer.app/fr/";
+
+// Segments d'URL à retirer du slug ET de l'URL affichée
+// (on tolère la faute pour robustesse)
+const STRIP_SEGMENTS = ["prospection", "veterinaire", "vetenrinaire", "dentiste"];
 
 function parseRemove(input: string): string[] {
   return input
@@ -20,9 +23,16 @@ function clean(v?: string | null) {
   return decodeURIComponent(v).trim().slice(0, 128).replace(/[<>"]/g, "");
 }
 
-/** Décode segments/queries/hash + calcule la racine AVANT les STRIP_SEGMENTS pour nettoyer l'URL */
+/**
+ * Décode segments/queries/hash + calcule la racine AVANT les STRIP_SEGMENTS pour nettoyer l'URL
+ * Priorité d’extraction :
+ *  1) Segments après le premier segment à retirer (format compact ou multi-segments)
+ *  2) Query compacte   ?v=Entreprise|Secteur|Ville|Tel|Email
+ *  3) Query claire     ?company=&sector=&city=&phone=&email=
+ *  4) Hash             #Entreprise/Secteur/Ville/Tel/Email
+ */
 function readUrlValues(): {
-  rootPath: string; // ex: "/fr" si "/fr/prospection/dentiste/...", sinon "/"
+  rootPath: string; // ex: "/fr" si "/fr/prospection/...", sinon "/"
   ent: string; sector: string; city: string; phone: string; email: string;
   shouldClean: boolean;
 } {
@@ -31,7 +41,7 @@ function readUrlValues(): {
   }
 
   const url = new URL(window.location.href);
-  const parts = url.pathname.split("/").filter(Boolean); // ["fr","prospection","dentiste","Dentia",...]
+  const parts = url.pathname.split("/").filter(Boolean);
 
   // Cherche le premier index où apparaît l’un des segments à retirer
   let firstIdx = -1;
@@ -58,6 +68,7 @@ function readUrlValues(): {
   // 1) Segments après STRIP_SEGMENTS
   if (firstIdx >= 0 && tail.length > 0) {
     const last = tail[tail.length - 1];
+
     if (last.includes("-")) {
       // Format compact : Entreprise-Secteur-Ville-Tel-Email
       const t = last.split("-").map(clean);
@@ -122,7 +133,7 @@ export default function Page() {
     ent: "", sector: "", city: "", phone: "", email: ""
   });
 
-  // Lecture + nettoyage (on enlève aussi /prospection et /dentiste)
+  // Lecture + nettoyage (on enlève aussi /prospection, /veterinaire, /dentiste)
   useEffect(() => {
     const { rootPath, ent, sector, city, phone, email, shouldClean } = readUrlValues();
     setVals({ ent, sector, city, phone, email });
@@ -135,8 +146,9 @@ export default function Page() {
     }
   }, []);
 
-  // iFrame / options (identique)
-  const [path] = useState<string>("/");
+  // iFrame / options
+  // ⚠️ IMPORTANT: pas de "/" initial, sinon new URL("/", TARGET) supprime le /fr
+  const [path] = useState<string>(""); // ex: "services" donnera …/fr/services
   const [disableJs] = useState<boolean>(false);
   const [removeInput] = useState<string>(
     ".__framer-badge-container, #__framer-badge-container"
@@ -168,9 +180,11 @@ export default function Page() {
   }, []);
 
   const proxySrc = useMemo(() => {
-    const absolute = new URL(path || "/", TARGET).toString();
+    // ⬇️ n’ajoute PAS de "/" devant path -> préserve le /fr
+    const absolute = new URL(path || "", TARGET).toString();
     const params = new URLSearchParams({ url: absolute });
 
+    // On propage les valeurs au proxy (qui gère le titre et les remplacements)
     if (ent)    params.set("company", ent);
     if (sector) params.set("sector", sector);
     if (city)   params.set("city", city);
@@ -179,6 +193,7 @@ export default function Page() {
 
     if (disableJs) params.set("disableJs", "1");
     for (const sel of parseRemove(removeInput)) params.append("remove", sel);
+
     return `/api/proxy?${params.toString()}`;
   }, [path, disableJs, removeInput, ent, sector, city, phone, email]);
 

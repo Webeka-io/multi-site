@@ -17,7 +17,7 @@ export default function Page() {
   const [path, setPath] = useState<string>("/");
   const [disableJs, setDisableJs] = useState<boolean>(false);
   const [removeInput, setRemoveInput] = useState<string>(
-    ".__framer-badge-container, #__framer-badge-container, .framer-1fin31n-container, #framer-1fin31n-container, .framer-rcd755-container, #framer-rcd755-container,"
+    ".__framer-badge-container, #__framer-badge-container, .framer-1fin31n-container, #framer-1fin31n-container, .framer-rcd755-container, #framer-rcd755-container, .framer-1limyy, #framer-1limyy"
   );
 
   const [vh, setVh] = useState<number | null>(null);

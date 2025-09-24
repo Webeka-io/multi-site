@@ -11,6 +11,13 @@ const ALLOWLIST = [
   "daring-remember-772934.framer.app",
   "drivora-wcopilot.webflow.io",
   "welcome-pitch-778087.framer.app",
+  "hopeful-copywriter-299860.framer.app",
+  "traditional-accessibility-641041.framer.app",
+  "familiar-report-107436.framer.app",
+  "jovial-sphere-930683.framer.app/fr/",
+  "jolly-overlays-247575.framer.app",
+  "moccasin-gift-930162.framer.app",
+  "jovial-sphere-930683.framer.app",
 ];
 
 function isAllowedHost(hostname: string) {
@@ -27,7 +34,7 @@ function parseRemove(params: URLSearchParams) {
     });
   }
   // Badge Framer par défaut
-  out.push("#__framer-badge-container", ".__framer-badge-container");
+  out.push("#__framer-badge-container", ".__framer-badge-container","#framer-1limyy",".framer-1limyy");
   return Array.from(new Set(out)).slice(0, 50);
 }
 

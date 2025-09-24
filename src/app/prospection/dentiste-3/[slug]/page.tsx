@@ -4,7 +4,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 // ⚠️ On pointe directement sur /fr et on préservera ce préfixe
-const TARGET = "https://traditional-accessibility-641041.framer.app/fr/";
+const TARGET = "https://jovial-sphere-930683.framer.app/fr/";
 
 // Segments d'URL à retirer du slug ET de l'URL affichée
 // (on tolère la faute pour robustesse)
