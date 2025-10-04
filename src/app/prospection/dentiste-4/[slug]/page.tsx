@@ -146,6 +146,12 @@ export default function Page() {
     }
   }, []);
 
+  // 🔹 Titre d’onglet = uniquement le nom de l’entreprise
+  useEffect(() => {
+    const title = ent || "Webeka";
+    document.title = title;
+  }, [ent]);
+
   // iFrame / options
   // ⚠️ IMPORTANT: pas de "/" initial, sinon new URL("/", TARGET) supprime le /fr
   const [path] = useState<string>(""); // ex: "services" donnera …/fr/services
@@ -184,7 +190,7 @@ export default function Page() {
     const absolute = new URL(path || "", TARGET).toString();
     const params = new URLSearchParams({ url: absolute });
 
-    // On propage les valeurs au proxy (qui gère le titre et les remplacements)
+    // On propage les valeurs au proxy (qui gère le titre et les remplacements dans l'IFRAME)
     if (ent)    params.set("company", ent);
     if (sector) params.set("sector", sector);
     if (city)   params.set("city", city);
