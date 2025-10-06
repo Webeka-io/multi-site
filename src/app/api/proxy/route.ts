@@ -18,6 +18,7 @@ const ALLOWLIST = [
   "jolly-overlays-247575.framer.app",
   "moccasin-gift-930162.framer.app",
   "jovial-sphere-930683.framer.app",
+  "angelic-people-442479.framer.app",
 ];
 
 function isAllowedHost(hostname: string) {
