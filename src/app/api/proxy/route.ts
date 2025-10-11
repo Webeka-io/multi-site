@@ -16,7 +16,7 @@ const ALLOWLIST = [
   "familiar-report-107436.framer.app",
   "jovial-sphere-930683.framer.app/fr/",
   "jolly-overlays-247575.framer.app",
-  "moccasin-gift-930162.framer.app",
+  "https://snow-table-769287.framer.app",
   "jovial-sphere-930683.framer.app",
   "angelic-people-442479.framer.app",
 ];
