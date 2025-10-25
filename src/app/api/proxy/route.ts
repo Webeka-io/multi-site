@@ -19,6 +19,12 @@ const ALLOWLIST = [
   "snow-table-769287.framer.app",
   "jovial-sphere-930683.framer.app",
   "angelic-people-442479.framer.app",
+  "olive-presentations-495692.framer.app",
+  "enlightened-channels-196138.framer.app",
+  "happier-stick-364972.framer.app",
+  "determined-video-987422.framer.app",
+  "ready-buttons-831336.framer.app",
+  "incomparable-deck-579608.framer.app"
 ];
 
 function isAllowedHost(hostname: string) {
