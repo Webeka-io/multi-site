@@ -4,7 +4,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 // ⚠️ On pointe directement sur /fr et on préservera ce préfixe
-const TARGET = "https://olive-presentations-495692.framer.app/fr/";
+const TARGET = "https://happier-stick-364972.framer.app/fr/";
 
 // Segments d'URL à retirer du slug ET de l'URL affichée
 // (on tolère la faute pour robustesse)
